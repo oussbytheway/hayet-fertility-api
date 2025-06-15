@@ -2,6 +2,7 @@ package com.hayet.fertility.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hayet.fertility.config.Constants;
+import com.hayet.fertility.domain.enumeration.NotificationChannel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -56,6 +57,15 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
     @Size(min = 5, max = 254)
     @Column(length = 254, unique = true)
     private String email;
+
+    @ElementCollection(targetClass = NotificationChannel.class)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(
+        name = "user_notification_preferences",
+        joinColumns = @JoinColumn(name = "user_id")
+    )
+    @Column(name = "notification_channel")
+    private Set<NotificationChannel> notificationPreference = new HashSet<>();
 
     @NotNull
     @Column(nullable = false)
@@ -148,6 +158,14 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public Set<NotificationChannel> getNotificationPreference() {
+        return notificationPreference;
+    }
+
+    public void setNotificationPreference(Set<NotificationChannel> notificationPreference) {
+        this.notificationPreference = notificationPreference;
     }
 
     public boolean isActivated() {
