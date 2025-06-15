@@ -431,12 +431,13 @@ class ClientResourceIT {
         partialUpdatedClient.setId(client.getId());
 
         partialUpdatedClient
-            .firstName(UPDATED_FIRST_NAME)
-            .phone(UPDATED_PHONE)
-            .gender(UPDATED_GENDER)
-            .language(UPDATED_LANGUAGE)
-            .reminderCount(UPDATED_REMINDER_COUNT)
-            .updated(UPDATED_UPDATED);
+            .lastName(UPDATED_LAST_NAME)
+            .notificationPreference(UPDATED_NOTIFICATION_PREFERENCE)
+            .note(UPDATED_NOTE)
+            .birthDate(UPDATED_BIRTH_DATE)
+            .tags(UPDATED_TAGS)
+            .created(UPDATED_CREATED)
+            .createdBy(UPDATED_CREATED_BY);
 
         restClientMockMvc
             .perform(
