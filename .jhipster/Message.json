@@ -56,19 +56,7 @@
       "fieldType": "String"
     }
   ],
-  "relationships": [
-    {
-      "relationshipType": "many-to-many",
-      "relationshipName": "clients",
-      "otherEntityName": "client",
-      "otherEntityField": "id",
-      "relationshipSide": "left",
-      "ownerSide": true,
-      "options": {
-        "required": false
-      }
-    }
-  ],
+  "relationships": [],
   "dto": "mapstruct",
   "service": "serviceClass",
   "pagination": "pagination",
