@@ -3,7 +3,7 @@ package com.hayet.fertility.service.dto;
 import com.hayet.fertility.domain.enumeration.ClientStatus;
 import com.hayet.fertility.domain.enumeration.Gender;
 import com.hayet.fertility.domain.enumeration.Language;
-import com.hayet.fertility.domain.enumeration.NotificationPreference;
+import com.hayet.fertility.domain.enumeration.NotificationChannel;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -29,7 +29,7 @@ public class ClientDTO implements Serializable {
 
     private String whatsapp;
 
-    private NotificationPreference notificationPreference;
+    private NotificationChannel notificationChannel;
 
     private String note;
 
@@ -101,12 +101,12 @@ public class ClientDTO implements Serializable {
         this.whatsapp = whatsapp;
     }
 
-    public NotificationPreference getNotificationPreference() {
-        return notificationPreference;
+    public NotificationChannel getNotificationPreference() {
+        return notificationChannel;
     }
 
-    public void setNotificationPreference(NotificationPreference notificationPreference) {
-        this.notificationPreference = notificationPreference;
+    public void setNotificationPreference(NotificationChannel notificationChannel) {
+        this.notificationChannel = notificationChannel;
     }
 
     public String getNote() {
@@ -228,7 +228,7 @@ public class ClientDTO implements Serializable {
             ", email='" + getEmail() + "'" +
             ", phone='" + getPhone() + "'" +
             ", whatsapp='" + getWhatsapp() + "'" +
-            ", notificationPreference='" + getNotificationPreference() + "'" +
+            ", notificationChannel='" + getNotificationPreference() + "'" +
             ", note='" + getNote() + "'" +
             ", gender='" + getGender() + "'" +
             ", birthDate='" + getBirthDate() + "'" +

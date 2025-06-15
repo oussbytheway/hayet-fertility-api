@@ -3,7 +3,7 @@ package com.hayet.fertility.domain;
 import com.hayet.fertility.domain.enumeration.ClientStatus;
 import com.hayet.fertility.domain.enumeration.Gender;
 import com.hayet.fertility.domain.enumeration.Language;
-import com.hayet.fertility.domain.enumeration.NotificationPreference;
+import com.hayet.fertility.domain.enumeration.NotificationChannel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
@@ -47,7 +47,7 @@ public class Client implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "notification_preference")
-    private NotificationPreference notificationPreference;
+    private NotificationChannel notificationChannel;
 
     @Column(name = "note")
     private String note;
@@ -165,17 +165,17 @@ public class Client implements Serializable {
         this.whatsapp = whatsapp;
     }
 
-    public NotificationPreference getNotificationPreference() {
-        return this.notificationPreference;
+    public NotificationChannel getNotificationPreference() {
+        return this.notificationChannel;
     }
 
-    public Client notificationPreference(NotificationPreference notificationPreference) {
-        this.setNotificationPreference(notificationPreference);
+    public Client notificationPreference(NotificationChannel notificationChannel) {
+        this.setNotificationPreference(notificationChannel);
         return this;
     }
 
-    public void setNotificationPreference(NotificationPreference notificationPreference) {
-        this.notificationPreference = notificationPreference;
+    public void setNotificationPreference(NotificationChannel notificationChannel) {
+        this.notificationChannel = notificationChannel;
     }
 
     public String getNote() {
@@ -350,7 +350,7 @@ public class Client implements Serializable {
             ", email='" + getEmail() + "'" +
             ", phone='" + getPhone() + "'" +
             ", whatsapp='" + getWhatsapp() + "'" +
-            ", notificationPreference='" + getNotificationPreference() + "'" +
+            ", notificationChannel='" + getNotificationPreference() + "'" +
             ", note='" + getNote() + "'" +
             ", gender='" + getGender() + "'" +
             ", birthDate='" + getBirthDate() + "'" +

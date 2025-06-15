@@ -14,7 +14,7 @@ import com.hayet.fertility.domain.Client;
 import com.hayet.fertility.domain.enumeration.ClientStatus;
 import com.hayet.fertility.domain.enumeration.Gender;
 import com.hayet.fertility.domain.enumeration.Language;
-import com.hayet.fertility.domain.enumeration.NotificationPreference;
+import com.hayet.fertility.domain.enumeration.NotificationChannel;
 import com.hayet.fertility.repository.ClientRepository;
 import com.hayet.fertility.service.dto.ClientDTO;
 import com.hayet.fertility.service.mapper.ClientMapper;
@@ -59,8 +59,8 @@ class ClientResourceIT {
     private static final String DEFAULT_WHATSAPP = "AAAAAAAAAA";
     private static final String UPDATED_WHATSAPP = "BBBBBBBBBB";
 
-    private static final NotificationPreference DEFAULT_NOTIFICATION_PREFERENCE = NotificationPreference.SMS;
-    private static final NotificationPreference UPDATED_NOTIFICATION_PREFERENCE = NotificationPreference.EMAIL;
+    private static final NotificationChannel DEFAULT_NOTIFICATION_PREFERENCE = NotificationChannel.SMS;
+    private static final NotificationChannel UPDATED_NOTIFICATION_PREFERENCE = NotificationChannel.EMAIL;
 
     private static final String DEFAULT_NOTE = "AAAAAAAAAA";
     private static final String UPDATED_NOTE = "BBBBBBBBBB";

@@ -1,6 +1,6 @@
 package com.hayet.fertility.service.dto;
 
-import com.hayet.fertility.domain.enumeration.NotificationPreference;
+import com.hayet.fertility.domain.enumeration.NotificationChannel;
 import com.hayet.fertility.domain.enumeration.ReminderMotif;
 import com.hayet.fertility.domain.enumeration.ReminderStatus;
 import com.hayet.fertility.domain.enumeration.RepeatUnit;
@@ -21,7 +21,7 @@ public class ReminderDTO implements Serializable {
 
     private ReminderStatus status;
 
-    private NotificationPreference channels;
+    private NotificationChannel channels;
 
     private String note;
 
@@ -67,11 +67,11 @@ public class ReminderDTO implements Serializable {
         this.status = status;
     }
 
-    public NotificationPreference getChannels() {
+    public NotificationChannel getChannels() {
         return channels;
     }
 
-    public void setChannels(NotificationPreference channels) {
+    public void setChannels(NotificationChannel channels) {
         this.channels = channels;
     }
 

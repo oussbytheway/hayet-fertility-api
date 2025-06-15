@@ -1,9 +1,9 @@
 package com.hayet.fertility.domain.enumeration;
 
 /**
- * The NotificationPreference enumeration.
+ * The NotificationChannel enumeration.
  */
-public enum NotificationPreference {
+public enum NotificationChannel {
     SMS,
     EMAIL,
     WHATSAPP,

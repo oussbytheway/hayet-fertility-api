@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hayet.fertility.IntegrationTest;
 import com.hayet.fertility.domain.Reminder;
-import com.hayet.fertility.domain.enumeration.NotificationPreference;
+import com.hayet.fertility.domain.enumeration.NotificationChannel;
 import com.hayet.fertility.domain.enumeration.ReminderMotif;
 import com.hayet.fertility.domain.enumeration.ReminderStatus;
 import com.hayet.fertility.domain.enumeration.RepeatUnit;
@@ -49,8 +49,8 @@ class ReminderResourceIT {
     private static final ReminderStatus DEFAULT_STATUS = ReminderStatus.SCHEDULED;
     private static final ReminderStatus UPDATED_STATUS = ReminderStatus.PENDING;
 
-    private static final NotificationPreference DEFAULT_CHANNELS = NotificationPreference.SMS;
-    private static final NotificationPreference UPDATED_CHANNELS = NotificationPreference.EMAIL;
+    private static final NotificationChannel DEFAULT_CHANNELS = NotificationChannel.SMS;
+    private static final NotificationChannel UPDATED_CHANNELS = NotificationChannel.EMAIL;
 
     private static final String DEFAULT_NOTE = "AAAAAAAAAA";
     private static final String UPDATED_NOTE = "BBBBBBBBBB";
