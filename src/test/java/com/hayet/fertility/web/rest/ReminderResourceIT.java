@@ -11,7 +11,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hayet.fertility.IntegrationTest;
 import com.hayet.fertility.domain.Reminder;
-import com.hayet.fertility.domain.enumeration.NotificationChannel;
 import com.hayet.fertility.domain.enumeration.ReminderMotif;
 import com.hayet.fertility.domain.enumeration.ReminderStatus;
 import com.hayet.fertility.domain.enumeration.RepeatUnit;
@@ -114,7 +113,6 @@ class ReminderResourceIT {
         return new Reminder()
             .motif(DEFAULT_MOTIF)
             .status(DEFAULT_STATUS)
-            .channels(DEFAULT_CHANNELS)
             .note(DEFAULT_NOTE)
             .sentAt(DEFAULT_SENT_AT)
             .resolvedAt(DEFAULT_RESOLVED_AT)
@@ -136,7 +134,6 @@ class ReminderResourceIT {
         return new Reminder()
             .motif(UPDATED_MOTIF)
             .status(UPDATED_STATUS)
-            .channels(UPDATED_CHANNELS)
             .note(UPDATED_NOTE)
             .sentAt(UPDATED_SENT_AT)
             .resolvedAt(UPDATED_RESOLVED_AT)
@@ -217,7 +214,6 @@ class ReminderResourceIT {
             .andExpect(jsonPath("$.[*].id").value(hasItem(reminder.getId().intValue())))
             .andExpect(jsonPath("$.[*].motif").value(hasItem(DEFAULT_MOTIF.toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
-            .andExpect(jsonPath("$.[*].channels").value(hasItem(DEFAULT_CHANNELS.toString())))
             .andExpect(jsonPath("$.[*].note").value(hasItem(DEFAULT_NOTE)))
             .andExpect(jsonPath("$.[*].sentAt").value(hasItem(sameInstant(DEFAULT_SENT_AT))))
             .andExpect(jsonPath("$.[*].resolvedAt").value(hasItem(sameInstant(DEFAULT_RESOLVED_AT))))
@@ -243,7 +239,6 @@ class ReminderResourceIT {
             .andExpect(jsonPath("$.id").value(reminder.getId().intValue()))
             .andExpect(jsonPath("$.motif").value(DEFAULT_MOTIF.toString()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
-            .andExpect(jsonPath("$.channels").value(DEFAULT_CHANNELS.toString()))
             .andExpect(jsonPath("$.note").value(DEFAULT_NOTE))
             .andExpect(jsonPath("$.sentAt").value(sameInstant(DEFAULT_SENT_AT)))
             .andExpect(jsonPath("$.resolvedAt").value(sameInstant(DEFAULT_RESOLVED_AT)))
@@ -277,7 +272,6 @@ class ReminderResourceIT {
         updatedReminder
             .motif(UPDATED_MOTIF)
             .status(UPDATED_STATUS)
-            .channels(UPDATED_CHANNELS)
             .note(UPDATED_NOTE)
             .sentAt(UPDATED_SENT_AT)
             .resolvedAt(UPDATED_RESOLVED_AT)
@@ -377,7 +371,7 @@ class ReminderResourceIT {
         partialUpdatedReminder.setId(reminder.getId());
 
         partialUpdatedReminder
-            .channels(UPDATED_CHANNELS)
+            .motif(UPDATED_MOTIF)
             .sentAt(UPDATED_SENT_AT)
             .resolvedAt(UPDATED_RESOLVED_AT)
             .createdBy(UPDATED_CREATED_BY)
@@ -412,7 +406,6 @@ class ReminderResourceIT {
         partialUpdatedReminder
             .motif(UPDATED_MOTIF)
             .status(UPDATED_STATUS)
-            .channels(UPDATED_CHANNELS)
             .note(UPDATED_NOTE)
             .sentAt(UPDATED_SENT_AT)
             .resolvedAt(UPDATED_RESOLVED_AT)

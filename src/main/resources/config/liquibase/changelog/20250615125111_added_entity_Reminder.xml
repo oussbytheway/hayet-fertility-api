@@ -20,9 +20,6 @@
             <column name="status" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="channels" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
             <column name="note" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
@@ -80,7 +77,6 @@
             <column name="id" type="numeric"/>
             <column name="motif" type="string"/>
             <column name="status" type="string"/>
-            <column name="channels" type="string"/>
             <column name="note" type="string"/>
             <column name="sent_at" type="date"/>
             <column name="resolved_at" type="date"/>

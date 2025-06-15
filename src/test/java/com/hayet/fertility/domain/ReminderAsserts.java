@@ -50,7 +50,6 @@ public class ReminderAsserts {
             .as("Verify Reminder relevant properties")
             .satisfies(e -> assertThat(e.getMotif()).as("check motif").isEqualTo(actual.getMotif()))
             .satisfies(e -> assertThat(e.getStatus()).as("check status").isEqualTo(actual.getStatus()))
-            .satisfies(e -> assertThat(e.getChannels()).as("check channels").isEqualTo(actual.getChannels()))
             .satisfies(e -> assertThat(e.getNote()).as("check note").isEqualTo(actual.getNote()))
             .satisfies(e ->
                 assertThat(e.getSentAt()).as("check sentAt").usingComparator(zonedDataTimeSameInstant).isEqualTo(actual.getSentAt())

@@ -15,11 +15,6 @@
       "fieldValues": "SCHEDULED,PENDING,SENT_ALL,SENT_PARTIAL,FAILED,RESOLVED"
     },
     {
-      "fieldName": "channels",
-      "fieldType": "NotificationPreference",
-      "fieldValues": "SMS,EMAIL,WHATSAPP"
-    },
-    {
       "fieldName": "note",
       "fieldType": "String"
     },

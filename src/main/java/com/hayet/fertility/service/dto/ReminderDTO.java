@@ -1,10 +1,8 @@
 package com.hayet.fertility.service.dto;
 
-import com.hayet.fertility.domain.enumeration.NotificationChannel;
 import com.hayet.fertility.domain.enumeration.ReminderMotif;
 import com.hayet.fertility.domain.enumeration.ReminderStatus;
 import com.hayet.fertility.domain.enumeration.RepeatUnit;
-
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -20,8 +18,6 @@ public class ReminderDTO implements Serializable {
     private ReminderMotif motif;
 
     private ReminderStatus status;
-
-    private NotificationChannel channels;
 
     private String note;
 
@@ -65,14 +61,6 @@ public class ReminderDTO implements Serializable {
 
     public void setStatus(ReminderStatus status) {
         this.status = status;
-    }
-
-    public NotificationChannel getChannels() {
-        return channels;
-    }
-
-    public void setChannels(NotificationChannel channels) {
-        this.channels = channels;
     }
 
     public String getNote() {
@@ -182,7 +170,6 @@ public class ReminderDTO implements Serializable {
             "id=" + getId() +
             ", motif='" + getMotif() + "'" +
             ", status='" + getStatus() + "'" +
-            ", channels='" + getChannels() + "'" +
             ", note='" + getNote() + "'" +
             ", sentAt='" + getSentAt() + "'" +
             ", resolvedAt='" + getResolvedAt() + "'" +

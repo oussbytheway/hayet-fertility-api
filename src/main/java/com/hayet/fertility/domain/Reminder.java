@@ -1,6 +1,5 @@
 package com.hayet.fertility.domain;
 
-import com.hayet.fertility.domain.enumeration.NotificationChannel;
 import com.hayet.fertility.domain.enumeration.ReminderMotif;
 import com.hayet.fertility.domain.enumeration.ReminderStatus;
 import com.hayet.fertility.domain.enumeration.RepeatUnit;
@@ -34,10 +33,6 @@ public class Reminder implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private ReminderStatus status;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "channels")
-    private NotificationChannel channels;
 
     @Column(name = "note")
     private String note;
@@ -109,19 +104,6 @@ public class Reminder implements Serializable {
 
     public void setStatus(ReminderStatus status) {
         this.status = status;
-    }
-
-    public NotificationChannel getChannels() {
-        return this.channels;
-    }
-
-    public Reminder channels(NotificationChannel channels) {
-        this.setChannels(channels);
-        return this;
-    }
-
-    public void setChannels(NotificationChannel channels) {
-        this.channels = channels;
     }
 
     public String getNote() {
@@ -280,7 +262,6 @@ public class Reminder implements Serializable {
             "id=" + getId() +
             ", motif='" + getMotif() + "'" +
             ", status='" + getStatus() + "'" +
-            ", channels='" + getChannels() + "'" +
             ", note='" + getNote() + "'" +
             ", sentAt='" + getSentAt() + "'" +
             ", resolvedAt='" + getResolvedAt() + "'" +
