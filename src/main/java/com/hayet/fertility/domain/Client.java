@@ -9,6 +9,9 @@ import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -45,9 +48,14 @@ public class Client implements Serializable {
     @Column(name = "whatsapp")
     private String whatsapp;
 
+    @ElementCollection(targetClass = NotificationChannel.class)
     @Enumerated(EnumType.STRING)
-    @Column(name = "notification_preference")
-    private NotificationChannel notificationPreference;
+    @CollectionTable(
+        name = "client_notification_preferences",
+        joinColumns = @JoinColumn(name = "client_id")
+    )
+    @Column(name = "notification_channel")
+    private Set<NotificationChannel> notificationPreference = new HashSet<>();
 
     @Column(name = "note")
     private String note;
@@ -165,16 +173,16 @@ public class Client implements Serializable {
         this.whatsapp = whatsapp;
     }
 
-    public NotificationChannel getNotificationPreference() {
+    public Set<NotificationChannel> getNotificationPreference() {
         return this.notificationPreference;
     }
 
-    public Client notificationPreference(NotificationChannel notificationChannel) {
+    public Client notificationPreference(Set<NotificationChannel> notificationChannel) {
         this.setNotificationPreference(notificationChannel);
         return this;
     }
 
-    public void setNotificationPreference(NotificationChannel notificationChannel) {
+    public void setNotificationPreference(Set<NotificationChannel> notificationChannel) {
         this.notificationPreference = notificationChannel;
     }
 

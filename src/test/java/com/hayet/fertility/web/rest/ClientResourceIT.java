@@ -25,6 +25,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,8 +60,8 @@ class ClientResourceIT {
     private static final String DEFAULT_WHATSAPP = "AAAAAAAAAA";
     private static final String UPDATED_WHATSAPP = "BBBBBBBBBB";
 
-    private static final NotificationChannel DEFAULT_NOTIFICATION_PREFERENCE = NotificationChannel.SMS;
-    private static final NotificationChannel UPDATED_NOTIFICATION_PREFERENCE = NotificationChannel.EMAIL;
+    private static final Set<NotificationChannel> DEFAULT_NOTIFICATION_PREFERENCE = Set.of(NotificationChannel.SMS);
+    private static final Set<NotificationChannel> UPDATED_NOTIFICATION_PREFERENCE = Set.of(NotificationChannel.EMAIL, NotificationChannel.WHATSAPP);
 
     private static final String DEFAULT_NOTE = "AAAAAAAAAA";
     private static final String UPDATED_NOTE = "BBBBBBBBBB";

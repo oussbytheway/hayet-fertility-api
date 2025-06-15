@@ -9,7 +9,9 @@ import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * A DTO for the {@link com.hayet.fertility.domain.Client} entity.
@@ -30,7 +32,7 @@ public class ClientDTO implements Serializable {
 
     private String whatsapp;
 
-    private NotificationChannel notificationPreference;
+    private Set<NotificationChannel> notificationPreference = new HashSet<>();
 
     private String note;
 
@@ -102,11 +104,11 @@ public class ClientDTO implements Serializable {
         this.whatsapp = whatsapp;
     }
 
-    public NotificationChannel getNotificationPreference() {
+    public Set<NotificationChannel> getNotificationPreference() {
         return notificationPreference;
     }
 
-    public void setNotificationPreference(NotificationChannel notificationChannel) {
+    public void setNotificationPreference(Set<NotificationChannel> notificationChannel) {
         this.notificationPreference = notificationChannel;
     }
 
