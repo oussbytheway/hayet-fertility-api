@@ -63,6 +63,7 @@ public class Reminder implements Serializable {
     private RepeatUnit repeatUnit;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id")
     private Client client;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

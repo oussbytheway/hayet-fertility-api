@@ -37,7 +37,9 @@ public class ReminderDTO implements Serializable {
 
     private RepeatUnit repeatUnit;
 
-    private ClientDTO client;
+    private Long client;
+
+    private String clientFullName;
 
     public Long getId() {
         return id;
@@ -135,12 +137,28 @@ public class ReminderDTO implements Serializable {
         this.repeatUnit = repeatUnit;
     }
 
-    public ClientDTO getClient() {
+    public RepeatUnit getRepeatUnit() {
+        return repeatUnit;
+    }
+
+    public void setRepeatUnit(RepeatUnit repeatUnit) {
+        this.repeatUnit = repeatUnit;
+    }
+
+    public Long getClient() {
         return client;
     }
 
-    public void setClient(ClientDTO client) {
+    public void setClient(Long client) {
         this.client = client;
+    }
+
+    public String getClientFullName() {
+        return clientFullName;
+    }
+
+    public void setClientFullName(String clientFullName) {
+        this.clientFullName = clientFullName;
     }
 
     @Override
@@ -163,23 +181,23 @@ public class ReminderDTO implements Serializable {
         return Objects.hash(this.id);
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "ReminderDTO{" +
-            "id=" + getId() +
-            ", motif='" + getMotif() + "'" +
-            ", status='" + getStatus() + "'" +
-            ", note='" + getNote() + "'" +
-            ", sentAt='" + getSentAt() + "'" +
-            ", resolvedAt='" + getResolvedAt() + "'" +
-            ", created='" + getCreated() + "'" +
-            ", createdBy='" + getCreatedBy() + "'" +
-            ", updated='" + getUpdated() + "'" +
-            ", updatedBy='" + getUpdatedBy() + "'" +
-            ", repeatEvery=" + getRepeatEvery() +
-            ", repeatUnit='" + getRepeatPattern() + "'" +
-            ", client=" + getClient() +
-            "}";
+            "id=" + id +
+            ", motif=" + motif +
+            ", status=" + status +
+            ", note='" + note + '\'' +
+            ", sentAt=" + sentAt +
+            ", resolvedAt=" + resolvedAt +
+            ", created=" + created +
+            ", createdBy='" + createdBy + '\'' +
+            ", updated=" + updated +
+            ", updatedBy='" + updatedBy + '\'' +
+            ", repeatEvery=" + repeatEvery +
+            ", repeatUnit=" + repeatUnit +
+            ", client=" + client +
+            ", clientFullName='" + clientFullName + '\'' +
+            '}';
     }
 }
