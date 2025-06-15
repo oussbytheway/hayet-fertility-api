@@ -1,5 +1,6 @@
 package com.hayet.fertility.service.dto;
 
+import com.hayet.fertility.domain.Client;
 import com.hayet.fertility.domain.enumeration.ClientStatus;
 import com.hayet.fertility.domain.enumeration.Gender;
 import com.hayet.fertility.domain.enumeration.Language;
@@ -202,11 +203,10 @@ public class ClientDTO implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ClientDTO)) {
+        if (!(o instanceof ClientDTO clientDTO)) {
             return false;
         }
 
-        ClientDTO clientDTO = (ClientDTO) o;
         if (this.id == null) {
             return false;
         }

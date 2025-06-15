@@ -160,11 +160,10 @@ public class ReminderDTO implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ReminderDTO)) {
+        if (!(o instanceof ReminderDTO reminderDTO)) {
             return false;
         }
 
-        ReminderDTO reminderDTO = (ReminderDTO) o;
         if (this.id == null) {
             return false;
         }
