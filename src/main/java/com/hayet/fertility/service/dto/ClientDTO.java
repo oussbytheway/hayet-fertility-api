@@ -29,7 +29,7 @@ public class ClientDTO implements Serializable {
 
     private String whatsapp;
 
-    private NotificationChannel notificationChannel;
+    private NotificationChannel notificationPreference;
 
     private String note;
 
@@ -102,11 +102,11 @@ public class ClientDTO implements Serializable {
     }
 
     public NotificationChannel getNotificationPreference() {
-        return notificationChannel;
+        return notificationPreference;
     }
 
     public void setNotificationPreference(NotificationChannel notificationChannel) {
-        this.notificationChannel = notificationChannel;
+        this.notificationPreference = notificationChannel;
     }
 
     public String getNote() {
@@ -228,7 +228,7 @@ public class ClientDTO implements Serializable {
             ", email='" + getEmail() + "'" +
             ", phone='" + getPhone() + "'" +
             ", whatsapp='" + getWhatsapp() + "'" +
-            ", notificationChannel='" + getNotificationPreference() + "'" +
+            ", notificationPreference='" + getNotificationPreference() + "'" +
             ", note='" + getNote() + "'" +
             ", gender='" + getGender() + "'" +
             ", birthDate='" + getBirthDate() + "'" +

@@ -47,7 +47,7 @@ public class Client implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "notification_preference")
-    private NotificationChannel notificationChannel;
+    private NotificationChannel notificationPreference;
 
     @Column(name = "note")
     private String note;
@@ -166,7 +166,7 @@ public class Client implements Serializable {
     }
 
     public NotificationChannel getNotificationPreference() {
-        return this.notificationChannel;
+        return this.notificationPreference;
     }
 
     public Client notificationPreference(NotificationChannel notificationChannel) {
@@ -175,7 +175,7 @@ public class Client implements Serializable {
     }
 
     public void setNotificationPreference(NotificationChannel notificationChannel) {
-        this.notificationChannel = notificationChannel;
+        this.notificationPreference = notificationChannel;
     }
 
     public String getNote() {
@@ -350,7 +350,7 @@ public class Client implements Serializable {
             ", email='" + getEmail() + "'" +
             ", phone='" + getPhone() + "'" +
             ", whatsapp='" + getWhatsapp() + "'" +
-            ", notificationChannel='" + getNotificationPreference() + "'" +
+            ", notificationPreference='" + getNotificationPreference() + "'" +
             ", note='" + getNote() + "'" +
             ", gender='" + getGender() + "'" +
             ", birthDate='" + getBirthDate() + "'" +
