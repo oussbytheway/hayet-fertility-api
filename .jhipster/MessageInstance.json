@@ -1,8 +1,9 @@
 {
-  "name": "MessageInstance",
   "annotations": {
     "changelogDate": "20250615150100"
   },
+  "applications": ["hayetFertility"],
+  "dto": "mapstruct",
   "fields": [
     {
       "fieldName": "content",
@@ -55,24 +56,22 @@
       "fieldType": "String"
     }
   ],
+  "name": "MessageInstance",
+  "pagination": "pagination",
   "relationships": [
     {
-      "relationshipType": "many-to-one",
-      "relationshipName": "client",
       "otherEntityName": "client",
-      "otherEntityField": "id"
+      "relationshipName": "client",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
     },
     {
-      "relationshipType": "many-to-one",
-      "relationshipName": "message",
       "otherEntityName": "message",
-      "otherEntityField": "id"
+      "relationshipName": "message",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
     }
   ],
-  "dto": "mapstruct",
-  "service": "serviceClass",
-  "pagination": "pagination",
-  "readOnly": false,
   "searchEngine": "no",
-  "jpaMetamodelFiltering": false
+  "service": "serviceClass"
 }

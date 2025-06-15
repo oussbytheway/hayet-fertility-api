@@ -36,7 +36,7 @@ entity Client {
   email String
   phone String
   whatsapp String
-  notificationPreference Set<NotificationChannel>
+  notificationPreference NotificationChannel
   note String
   gender Gender
   birthDate LocalDate

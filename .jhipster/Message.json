@@ -1,8 +1,9 @@
 {
-  "name": "Message",
   "annotations": {
     "changelogDate": "20250615180000"
   },
+  "applications": ["hayetFertility"],
+  "dto": "mapstruct",
   "fields": [
     {
       "fieldName": "content",
@@ -56,11 +57,9 @@
       "fieldType": "String"
     }
   ],
-  "relationships": [],
-  "dto": "mapstruct",
-  "service": "serviceClass",
+  "name": "Message",
   "pagination": "pagination",
-  "readOnly": false,
+  "relationships": [],
   "searchEngine": "no",
-  "jpaMetamodelFiltering": false
+  "service": "serviceClass"
 }

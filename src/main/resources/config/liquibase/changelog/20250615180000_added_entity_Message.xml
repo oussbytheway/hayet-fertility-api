@@ -58,20 +58,6 @@
         <dropDefaultValue tableName="message" columnName="updated" columnDataType="${datetimeType}"/>
     </changeSet>
 
-    <changeSet id="20250615180000-1-relations" author="jhipster">
-
-        <createTable tableName="rel_message__clients">
-            <column name="clients_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="message_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey columnNames="message_id, clients_id" tableName="rel_message__clients"/>
-    </changeSet>
-
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
 
     <!--
