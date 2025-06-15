@@ -48,9 +48,6 @@ class ReminderResourceIT {
     private static final ReminderStatus DEFAULT_STATUS = ReminderStatus.SCHEDULED;
     private static final ReminderStatus UPDATED_STATUS = ReminderStatus.PENDING;
 
-    private static final NotificationChannel DEFAULT_CHANNELS = NotificationChannel.SMS;
-    private static final NotificationChannel UPDATED_CHANNELS = NotificationChannel.EMAIL;
-
     private static final String DEFAULT_NOTE = "AAAAAAAAAA";
     private static final String UPDATED_NOTE = "BBBBBBBBBB";
 
