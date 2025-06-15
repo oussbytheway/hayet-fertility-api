@@ -129,14 +129,6 @@ public class ReminderDTO implements Serializable {
         this.repeatEvery = repeatEvery;
     }
 
-    public RepeatUnit getRepeatPattern() {
-        return repeatUnit;
-    }
-
-    public void setRepeatPattern(RepeatUnit repeatUnit) {
-        this.repeatUnit = repeatUnit;
-    }
-
     public RepeatUnit getRepeatUnit() {
         return repeatUnit;
     }

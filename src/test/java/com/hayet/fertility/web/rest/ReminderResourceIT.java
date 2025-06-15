@@ -72,8 +72,8 @@ class ReminderResourceIT {
     private static final Integer DEFAULT_REPEAT_EVERY = 1;
     private static final Integer UPDATED_REPEAT_EVERY = 2;
 
-    private static final RepeatUnit DEFAULT_REPEAT_PATTERN = RepeatUnit.DAY;
-    private static final RepeatUnit UPDATED_REPEAT_PATTERN = RepeatUnit.WEEK;
+    private static final RepeatUnit DEFAULT_REPEAT_UNIT = RepeatUnit.DAY;
+    private static final RepeatUnit UPDATED_REPEAT_UNIT = RepeatUnit.WEEK;
 
     private static final String ENTITY_API_URL = "/api/reminders";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -118,7 +118,7 @@ class ReminderResourceIT {
             .updated(DEFAULT_UPDATED)
             .updatedBy(DEFAULT_UPDATED_BY)
             .repeatEvery(DEFAULT_REPEAT_EVERY)
-            .repeatPattern(DEFAULT_REPEAT_PATTERN);
+            .repeatUnit(DEFAULT_REPEAT_UNIT);
     }
 
     /**
@@ -139,7 +139,7 @@ class ReminderResourceIT {
             .updated(UPDATED_UPDATED)
             .updatedBy(UPDATED_UPDATED_BY)
             .repeatEvery(UPDATED_REPEAT_EVERY)
-            .repeatPattern(UPDATED_REPEAT_PATTERN);
+            .repeatUnit(UPDATED_REPEAT_UNIT);
     }
 
     @BeforeEach
@@ -219,7 +219,7 @@ class ReminderResourceIT {
             .andExpect(jsonPath("$.[*].updated").value(hasItem(sameInstant(DEFAULT_UPDATED))))
             .andExpect(jsonPath("$.[*].updatedBy").value(hasItem(DEFAULT_UPDATED_BY)))
             .andExpect(jsonPath("$.[*].repeatEvery").value(hasItem(DEFAULT_REPEAT_EVERY)))
-            .andExpect(jsonPath("$.[*].repeatPattern").value(hasItem(DEFAULT_REPEAT_PATTERN.toString())));
+            .andExpect(jsonPath("$.[*].repeatUnit").value(hasItem(DEFAULT_REPEAT_UNIT.toString())));
     }
 
     @Test
@@ -244,7 +244,7 @@ class ReminderResourceIT {
             .andExpect(jsonPath("$.updated").value(sameInstant(DEFAULT_UPDATED)))
             .andExpect(jsonPath("$.updatedBy").value(DEFAULT_UPDATED_BY))
             .andExpect(jsonPath("$.repeatEvery").value(DEFAULT_REPEAT_EVERY))
-            .andExpect(jsonPath("$.repeatPattern").value(DEFAULT_REPEAT_PATTERN.toString()));
+            .andExpect(jsonPath("$.repeatUnit").value(DEFAULT_REPEAT_UNIT.toString()));
     }
 
     @Test
@@ -277,7 +277,7 @@ class ReminderResourceIT {
             .updated(UPDATED_UPDATED)
             .updatedBy(UPDATED_UPDATED_BY)
             .repeatEvery(UPDATED_REPEAT_EVERY)
-            .repeatPattern(UPDATED_REPEAT_PATTERN);
+            .repeatUnit(UPDATED_REPEAT_UNIT);
         ReminderDTO reminderDTO = reminderMapper.toDto(updatedReminder);
 
         restReminderMockMvc
@@ -411,7 +411,7 @@ class ReminderResourceIT {
             .updated(UPDATED_UPDATED)
             .updatedBy(UPDATED_UPDATED_BY)
             .repeatEvery(UPDATED_REPEAT_EVERY)
-            .repeatPattern(UPDATED_REPEAT_PATTERN);
+            .repeatUnit(UPDATED_REPEAT_UNIT);
 
         restReminderMockMvc
             .perform(

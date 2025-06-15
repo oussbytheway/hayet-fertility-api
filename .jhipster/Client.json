@@ -27,8 +27,9 @@
     },
     {
       "fieldName": "notificationPreference",
-      "fieldType": "NotificationPreference",
-      "fieldValues": "SMS,EMAIL,WHATSAPP"
+      "fieldType": "Set<NotificationChannel>",
+      "fieldValues": "SMS,EMAIL,WHATSAPP",
+      "fieldComment": "This is a Set<Enum>. You must manually add @ElementCollection in the entity after generation."
     },
     {
       "fieldName": "note",

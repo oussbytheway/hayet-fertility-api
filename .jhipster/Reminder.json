@@ -1,8 +1,14 @@
 {
+  "name": "Reminder",
+  "dto": "mapstruct",
+  "service": "serviceClass",
+  "pagination": "pagination",
+  "readOnly": false,
+  "searchEngine": "no",
+  "jpaMetamodelFiltering": false,
   "annotations": {
     "changelogDate": "20250615125111"
   },
-  "dto": "mapstruct",
   "fields": [
     {
       "fieldName": "motif",
@@ -47,24 +53,19 @@
       "fieldType": "Integer"
     },
     {
-      "fieldName": "repeatPattern",
-      "fieldType": "RepeatPattern",
+      "fieldName": "repeatUnit",
+      "fieldType": "RepeatUnit",
       "fieldValues": "DAILY,WEEKLY,MONTHLY,YEARLY"
     }
   ],
-  "jpaMetamodelFiltering": false,
-  "name": "Reminder",
-  "pagination": "pagination",
-  "readOnly": false,
   "relationships": [
     {
-      "otherEntityField": "id",
-      "otherEntityName": "client",
+      "relationshipType": "many-to-one",
       "relationshipName": "client",
+      "otherEntityName": "client",
+      "otherEntityField": "id",
       "relationshipSide": "left",
-      "relationshipType": "many-to-one"
+      "joinColumn": true
     }
-  ],
-  "searchEngine": "no",
-  "service": "serviceClass"
+  ]
 }

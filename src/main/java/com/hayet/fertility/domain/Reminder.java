@@ -59,7 +59,7 @@ public class Reminder implements Serializable {
     private Integer repeatEvery;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "repeat_pattern")
+    @Column(name = "repeat_unit")
     private RepeatUnit repeatUnit;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -211,16 +211,16 @@ public class Reminder implements Serializable {
         this.repeatEvery = repeatEvery;
     }
 
-    public RepeatUnit getRepeatPattern() {
+    public RepeatUnit getRepeatUnit() {
         return this.repeatUnit;
     }
 
-    public Reminder repeatPattern(RepeatUnit repeatUnit) {
-        this.setRepeatPattern(repeatUnit);
+    public Reminder repeatUnit(RepeatUnit repeatUnit) {
+        this.setRepeatUnit(repeatUnit);
         return this;
     }
 
-    public void setRepeatPattern(RepeatUnit repeatUnit) {
+    public void setRepeatUnit(RepeatUnit repeatUnit) {
         this.repeatUnit = repeatUnit;
     }
 
@@ -271,7 +271,7 @@ public class Reminder implements Serializable {
             ", updated='" + getUpdated() + "'" +
             ", updatedBy='" + getUpdatedBy() + "'" +
             ", repeatEvery=" + getRepeatEvery() +
-            ", repeatUnit='" + getRepeatPattern() + "'" +
+            ", repeatUnit='" + getRepeatUnit() + "'" +
             "}";
     }
 }

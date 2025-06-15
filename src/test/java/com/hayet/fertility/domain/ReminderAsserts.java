@@ -69,7 +69,7 @@ public class ReminderAsserts {
             )
             .satisfies(e -> assertThat(e.getUpdatedBy()).as("check updatedBy").isEqualTo(actual.getUpdatedBy()))
             .satisfies(e -> assertThat(e.getRepeatEvery()).as("check repeatEvery").isEqualTo(actual.getRepeatEvery()))
-            .satisfies(e -> assertThat(e.getRepeatPattern()).as("check repeatPattern").isEqualTo(actual.getRepeatPattern()));
+            .satisfies(e -> assertThat(e.getRepeatUnit()).as("check repeatUnit").isEqualTo(actual.getRepeatUnit()));
     }
 
     /**
