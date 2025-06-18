@@ -1,0 +1,78 @@
+{
+  "annotations": {
+    "changelogDate": "20250615132000"
+  },
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "content",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "channel",
+      "fieldType": "NotificationChannel",
+      "fieldValues": "EMAIL,SMS,WHATSAPP"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "NotificationStatus",
+      "fieldValues": "PENDING,SENT,DELIVERED,FAILED"
+    },
+    {
+      "fieldName": "sentAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "deliveredAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "failedAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "deliveryAttempts",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "errorMessage",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "created",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "createdBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "updated",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "updatedBy",
+      "fieldType": "String"
+    }
+  ],
+  "jpaMetamodelFiltering": false,
+  "name": "Notification",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "relationshipName": "reminder",
+      "otherEntityName": "reminder",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "relationshipName": "client",
+      "otherEntityName": "client",
+      "otherEntityField": "id"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

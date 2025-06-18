@@ -1,0 +1,179 @@
+application {
+  config {
+    applicationType monolith
+    authenticationType jwt
+    baseName hayetFertility
+    buildTool maven
+    cacheProvider hazelcast
+    clientFramework no
+    creationTimestamp 1749986887504
+    databaseType sql
+    devDatabaseType postgresql
+    enableHibernateCache true
+    enableSwaggerCodegen false
+    enableTranslation false
+    jhipsterVersion "8.7.3"
+    jwtSecretKey "NDcwMDk4NGVjMDViZTNhZGMzZTAwZWZiMmRiOTRhMTVlZjNhNzQwMWRlMWVlOTkyNjNiM2U4MzJjZWJkMDg4MzczMjBhNmY1MGI3ODVjNzdiNzM3ZDhmZWY0YmFmOGE5NjdkNjViZTlhN2IzNDFkODViMzk2ODdhYjBiYWYwMDY="
+    microfrontends []
+    nativeLanguage en
+    packageName com.hayet.fertility
+    prodDatabaseType postgresql
+    reactive false
+    searchEngine false
+    serviceDiscoveryType false
+    skipClient true
+    testFrameworks []
+    websocket spring-websocket
+  }
+
+  entities Client, Message, MessageInstance, Notification, Reminder
+}
+
+@ChangelogDate("20250615122558")
+entity Client {
+  firstName String
+  lastName String required
+  email String
+  phone String
+  whatsapp String
+  notificationPreference NotificationChannel
+  note String
+  gender Gender
+  birthDate LocalDate
+  language Language
+  status ClientStatus
+  reminderCount Integer
+  tags String
+  created ZonedDateTime
+  createdBy String
+  updated ZonedDateTime
+  updatedBy String
+}
+@ChangelogDate("20250615180000")
+entity Message {
+  content String
+  audience MessageAudience
+  channel NotificationChannel
+  status MessageStatus
+  scheduledAt ZonedDateTime
+  sentAt ZonedDateTime
+  tag String
+  errorMessage String
+  created ZonedDateTime
+  createdBy String
+  updated ZonedDateTime
+  updatedBy String
+}
+@ChangelogDate("20250615150100")
+entity MessageInstance {
+  content String
+  status NotificationStatus
+  channel NotificationChannel
+  sentAt ZonedDateTime
+  deliveredAt ZonedDateTime
+  failedAt ZonedDateTime
+  deliveryAttempts Integer
+  errorMessage String
+  created ZonedDateTime
+  createdBy String
+  updated ZonedDateTime
+  updatedBy String
+}
+@ChangelogDate("20250615132000")
+entity Notification {
+  content String
+  channel NotificationChannel
+  status NotificationStatus
+  sentAt ZonedDateTime
+  deliveredAt ZonedDateTime
+  failedAt ZonedDateTime
+  deliveryAttempts Integer
+  errorMessage String
+  created ZonedDateTime
+  createdBy String
+  updated ZonedDateTime
+  updatedBy String
+}
+@ChangelogDate("20250615125111")
+entity Reminder {
+  motif ReminderMotif
+  status ReminderStatus
+  note String
+  sentAt ZonedDateTime
+  resolvedAt ZonedDateTime
+  created ZonedDateTime
+  createdBy String
+  updated ZonedDateTime
+  updatedBy String
+  repeatEvery Integer
+  repeatUnit RepeatUnit
+}
+
+enum NotificationChannel {
+  SMS,
+  EMAIL,
+  WHATSAPP
+}
+enum Gender {
+  MALE,
+  FEMALE
+}
+enum Language {
+  EN,
+  FR,
+  AR
+}
+enum ClientStatus {
+  ACTIVE,
+  ARCHIVED
+}
+enum MessageAudience {
+  ALL_CLIENTS,
+  SELECTED_CLIENTS,
+  BY_TAG,
+  BY_LANGUAGE
+}
+enum MessageStatus {
+  DRAFT,
+  SCHEDULED,
+  SENT,
+  FAILED
+}
+enum NotificationStatus {
+  PENDING,
+  SENT,
+  DELIVERED,
+  FAILED
+}
+enum ReminderMotif {
+  MOTIF1,
+  MOTIF2,
+  MOTIF3
+}
+enum ReminderStatus {
+  SCHEDULED,
+  PENDING,
+  SENT_ALL,
+  SENT_PARTIAL,
+  FAILED,
+  RESOLVED
+}
+enum RepeatUnit {
+  DAILY,
+  WEEKLY,
+  MONTHLY,
+  YEARLY
+}
+
+relationship ManyToOne {
+  MessageInstance{client} to Client
+  MessageInstance{message} to Message
+  Notification{reminder} to Reminder
+  Notification{client} to Client
+  Reminder{client} to Client
+}
+
+dto Client, Message, MessageInstance, Notification, Reminder with mapstruct
+paginate Client, Message, MessageInstance, Notification, Reminder with pagination
+service Client, Message, MessageInstance, Notification, Reminder with serviceClass
+search Client, Message, MessageInstance, Notification, Reminder with no

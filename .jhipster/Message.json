@@ -1,0 +1,65 @@
+{
+  "annotations": {
+    "changelogDate": "20250615180000"
+  },
+  "applications": ["hayetFertility"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "content",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "audience",
+      "fieldType": "MessageAudience",
+      "fieldValues": "ALL_CLIENTS,SELECTED_CLIENTS,BY_TAG,BY_LANGUAGE"
+    },
+    {
+      "fieldName": "channel",
+      "fieldType": "NotificationChannel",
+      "fieldValues": "SMS,EMAIL,WHATSAPP"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "MessageStatus",
+      "fieldValues": "DRAFT,SCHEDULED,SENT,FAILED"
+    },
+    {
+      "fieldName": "scheduledAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "sentAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "tag",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "errorMessage",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "created",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "createdBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "updated",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "updatedBy",
+      "fieldType": "String"
+    }
+  ],
+  "name": "Message",
+  "pagination": "pagination",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

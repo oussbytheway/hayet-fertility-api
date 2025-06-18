@@ -1,0 +1,71 @@
+{
+  "name": "Reminder",
+  "dto": "mapstruct",
+  "service": "serviceClass",
+  "pagination": "pagination",
+  "readOnly": false,
+  "searchEngine": "no",
+  "jpaMetamodelFiltering": false,
+  "annotations": {
+    "changelogDate": "20250615125111"
+  },
+  "fields": [
+    {
+      "fieldName": "motif",
+      "fieldType": "ReminderMotif",
+      "fieldValues": "MOTIF1,MOTIF2,MOTIF3"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "ReminderStatus",
+      "fieldValues": "SCHEDULED,PENDING,SENT_ALL,SENT_PARTIAL,FAILED,RESOLVED"
+    },
+    {
+      "fieldName": "note",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "sentAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "resolvedAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "created",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "createdBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "updated",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "updatedBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "repeatEvery",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "repeatUnit",
+      "fieldType": "RepeatUnit",
+      "fieldValues": "DAILY,WEEKLY,MONTHLY,YEARLY"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "relationshipName": "client",
+      "otherEntityName": "client",
+      "otherEntityField": "id",
+      "relationshipSide": "left",
+      "joinColumn": true
+    }
+  ]
+}

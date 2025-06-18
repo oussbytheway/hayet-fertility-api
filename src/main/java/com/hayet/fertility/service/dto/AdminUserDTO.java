@@ -3,9 +3,11 @@ package com.hayet.fertility.service.dto;
 import com.hayet.fertility.config.Constants;
 import com.hayet.fertility.domain.Authority;
 import com.hayet.fertility.domain.User;
+import com.hayet.fertility.domain.enumeration.NotificationChannel;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,6 +34,8 @@ public class AdminUserDTO implements Serializable {
     @Email
     @Size(min = 5, max = 254)
     private String email;
+
+    private Set<NotificationChannel> notificationPreference = new HashSet<>();
 
     @Size(max = 256)
     private String imageUrl;
@@ -61,6 +65,7 @@ public class AdminUserDTO implements Serializable {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
+        this.notificationPreference = user.getNotificationPreference();
         this.activated = user.isActivated();
         this.imageUrl = user.getImageUrl();
         this.langKey = user.getLangKey();
@@ -109,6 +114,14 @@ public class AdminUserDTO implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Set<NotificationChannel> getNotificationPreference() {
+        return notificationPreference;
+    }
+
+    public void setNotificationPreference(Set<NotificationChannel> notificationPreference) {
+        this.notificationPreference = notificationPreference;
     }
 
     public String getImageUrl() {
