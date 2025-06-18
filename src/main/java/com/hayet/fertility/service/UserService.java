@@ -286,6 +286,11 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    public Optional<User> findOneWithAuthoritiesByEmailIgnoreCase(String login) {
+        return userRepository.findOneWithAuthoritiesByEmailIgnoreCase(login);
+    }
+
+    @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthorities() {
         return SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneWithAuthoritiesByLogin);
     }
