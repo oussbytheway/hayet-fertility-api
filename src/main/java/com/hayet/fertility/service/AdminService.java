@@ -63,6 +63,7 @@ public class AdminService {
                 }
                 newAdmin.setImageUrl(originalAdmin.getImageUrl());
                 newAdmin.setActivated(originalAdmin.isActivated());
+                newAdmin.setNotificationPreference(originalAdmin.getNotificationPreference());
                 newAdmin.setLangKey(originalAdmin.getLangKey());
                 Set<Authority> managedAuthorities = newAdmin.getAuthorities();
                 managedAuthorities.clear();

@@ -6,7 +6,9 @@ import com.hayet.fertility.security.AuthoritiesConstants;
 import com.hayet.fertility.service.MailService;
 import com.hayet.fertility.service.AdminService;
 import com.hayet.fertility.service.dto.AdminUserDTO;
+import com.hayet.fertility.web.rest.errors.BadRequestAlertException;
 import com.hayet.fertility.web.rest.errors.EmailAlreadyUsedException;
+import com.hayet.fertility.web.rest.errors.ErrorConstants;
 import com.hayet.fertility.web.rest.errors.LoginAlreadyUsedException;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -78,6 +80,13 @@ public class AdminController {
         original = userRepository.findOneByLogin(admin.getLogin().toLowerCase());
         if (original.isPresent() && (!original.orElseThrow().getId().equals(admin.getId()))) {
             throw new LoginAlreadyUsedException();
+        }
+        if (original.isPresent() && (!original.orElseThrow().getNotificationPreference().isEmpty())) {
+            throw new BadRequestAlertException(
+                "Please pick at least one notification preference",
+                "admin",
+                ErrorConstants.AT_LEAST_ONE_NOTIFICATION_PREFERENCE_IS_REQUIRED
+            );
         }
         Optional<AdminUserDTO> updatedUser = adminService.updateAdmin(admin);
 
