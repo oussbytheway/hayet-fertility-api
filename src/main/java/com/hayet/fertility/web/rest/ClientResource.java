@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -60,7 +61,7 @@ public class ClientResource {
         if (clientDTO.getId() != null) {
             throw new BadRequestAlertException("A new client cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        clientDTO = clientService.save(clientDTO);
+        clientDTO = clientService.create(clientDTO);
         return ResponseEntity.created(new URI("/api/clients/" + clientDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, clientDTO.getId().toString()))
             .body(clientDTO);
@@ -69,7 +70,6 @@ public class ClientResource {
     /**
      * {@code PUT  /clients/:id} : Updates an existing client.
      *
-     * @param id the id of the clientDTO to save.
      * @param clientDTO the clientDTO to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated clientDTO,
      * or with status {@code 400 (Bad Request)} if the clientDTO is not valid,
@@ -77,19 +77,15 @@ public class ClientResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<ClientDTO> updateClient(
-        @PathVariable(value = "id", required = false) final Long id,
+    public ResponseEntity<ClientDTO> update(
         @Valid @RequestBody ClientDTO clientDTO
-    ) throws URISyntaxException {
-        LOG.debug("REST request to update Client : {}, {}", id, clientDTO);
+    ) throws URISyntaxException, AccessDeniedException {
+        LOG.debug("REST request to update Client : {}", clientDTO.getId());
         if (clientDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, clientDTO.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
-        }
 
-        if (!clientRepository.existsById(id)) {
+        if (!clientRepository.existsById(clientDTO.getId())) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
@@ -97,42 +93,6 @@ public class ClientResource {
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, clientDTO.getId().toString()))
             .body(clientDTO);
-    }
-
-    /**
-     * {@code PATCH  /clients/:id} : Partial updates given fields of an existing client, field will ignore if it is null
-     *
-     * @param id the id of the clientDTO to save.
-     * @param clientDTO the clientDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated clientDTO,
-     * or with status {@code 400 (Bad Request)} if the clientDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the clientDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the clientDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
-    @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<ClientDTO> partialUpdateClient(
-        @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody ClientDTO clientDTO
-    ) throws URISyntaxException {
-        LOG.debug("REST request to partial update Client partially : {}, {}", id, clientDTO);
-        if (clientDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
-        }
-        if (!Objects.equals(id, clientDTO.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
-        }
-
-        if (!clientRepository.existsById(id)) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
-        }
-
-        Optional<ClientDTO> result = clientService.partialUpdate(clientDTO);
-
-        return ResponseUtil.wrapOrNotFound(
-            result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, clientDTO.getId().toString())
-        );
     }
 
     /**

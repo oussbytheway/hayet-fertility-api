@@ -29,7 +29,8 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class AdminController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AdminController.class);
+    private static final Logger log = LoggerFactory.getLogger(AdminController.class);
+    private static final String ENTITY_NAME = "Admin";
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
@@ -55,7 +56,7 @@ public class AdminController {
     @GetMapping("/admin/{id}")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<AdminUserDTO> getOne(@PathVariable("id") String email) {
-        LOG.debug("REST request to get Admin with email : {}", email);
+        log.debug("REST request to get Admin with email : {}", email);
         return ResponseUtil.wrapOrNotFound(adminService.findOneWithAuthoritiesByEmailIgnoreCase(email).map(AdminUserDTO::new));
     }
 
@@ -72,19 +73,15 @@ public class AdminController {
     public ResponseEntity<AdminUserDTO> update(
         @Valid @RequestBody AdminUserDTO admin
     ) {
-        LOG.debug("REST request to update User : {}", admin);
+        log.debug("REST request to update Admin : {}", admin);
         Optional<User> original = userRepository.findOneByEmailIgnoreCase(admin.getEmail());
         if (original.isPresent() && (!original.orElseThrow().getId().equals(admin.getId()))) {
             throw new EmailAlreadyUsedException();
         }
-        original = userRepository.findOneByLogin(admin.getLogin().toLowerCase());
-        if (original.isPresent() && (!original.orElseThrow().getId().equals(admin.getId()))) {
-            throw new LoginAlreadyUsedException();
-        }
-        if (original.isPresent() && (!original.orElseThrow().getNotificationPreference().isEmpty())) {
+        if (original.isPresent() && (original.orElseThrow().getNotificationPreference() == null || original.orElseThrow().getNotificationPreference().isEmpty())) {
             throw new BadRequestAlertException(
                 "Please pick at least one notification preference",
-                "admin",
+                ENTITY_NAME,
                 ErrorConstants.AT_LEAST_ONE_NOTIFICATION_PREFERENCE_IS_REQUIRED
             );
         }
