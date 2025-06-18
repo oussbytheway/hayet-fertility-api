@@ -6,5 +6,9 @@ package com.hayet.fertility.domain.enumeration;
 public enum Language {
     EN,
     FR,
-    AR,
+    AR;
+
+    public String getValue() {
+        return this.name().toLowerCase();
+    }
 }
