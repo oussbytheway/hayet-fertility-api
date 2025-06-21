@@ -1,8 +1,13 @@
 package com.hayet.fertility.service.dto;
 
 import com.hayet.fertility.domain.enumeration.ReminderMotif;
+import com.hayet.fertility.domain.enumeration.ReminderPriority;
 import com.hayet.fertility.domain.enumeration.ReminderStatus;
 import com.hayet.fertility.domain.enumeration.RepeatUnit;
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -21,9 +26,19 @@ public class ReminderDTO implements Serializable {
 
     private String note;
 
+    private ZonedDateTime dueAt;
+
     private ZonedDateTime sentAt;
 
     private ZonedDateTime resolvedAt;
+
+    private Integer repeatEvery;
+
+    private RepeatUnit repeatUnit;
+
+    private ReminderPriority priority;
+
+    private Boolean canceled;
 
     private ZonedDateTime created;
 
@@ -32,10 +47,6 @@ public class ReminderDTO implements Serializable {
     private ZonedDateTime updated;
 
     private String updatedBy;
-
-    private Integer repeatEvery;
-
-    private RepeatUnit repeatUnit;
 
     private Long client;
 
@@ -71,6 +82,14 @@ public class ReminderDTO implements Serializable {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public ZonedDateTime getDueAt() {
+        return dueAt;
+    }
+
+    public void setDueAt(ZonedDateTime dueAt) {
+        this.dueAt = dueAt;
     }
 
     public ZonedDateTime getSentAt() {
@@ -180,6 +199,7 @@ public class ReminderDTO implements Serializable {
             ", motif=" + motif +
             ", status=" + status +
             ", note='" + note + '\'' +
+            ", dueAt=" + dueAt +
             ", sentAt=" + sentAt +
             ", resolvedAt=" + resolvedAt +
             ", created=" + created +

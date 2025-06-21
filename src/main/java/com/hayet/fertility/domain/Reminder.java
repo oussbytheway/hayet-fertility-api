@@ -1,6 +1,7 @@
 package com.hayet.fertility.domain;
 
 import com.hayet.fertility.domain.enumeration.ReminderMotif;
+import com.hayet.fertility.domain.enumeration.ReminderPriority;
 import com.hayet.fertility.domain.enumeration.ReminderStatus;
 import com.hayet.fertility.domain.enumeration.RepeatUnit;
 import jakarta.persistence.*;
@@ -37,11 +38,28 @@ public class Reminder implements Serializable {
     @Column(name = "note")
     private String note;
 
+    @Column(name = "due_at")
+    private ZonedDateTime dueAt;
+
     @Column(name = "sent_at")
     private ZonedDateTime sentAt;
 
     @Column(name = "resolved_at")
     private ZonedDateTime resolvedAt;
+
+    @Column(name = "repeat_every")
+    private Integer repeatEvery;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "repeat_unit")
+    private RepeatUnit repeatUnit;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "repeat_unit")
+    private ReminderPriority priority;
+
+    @Column(name = "canceled")
+    private Boolean canceled;
 
     @Column(name = "created")
     private ZonedDateTime created;
@@ -54,13 +72,6 @@ public class Reminder implements Serializable {
 
     @Column(name = "updated_by")
     private String updatedBy;
-
-    @Column(name = "repeat_every")
-    private Integer repeatEvery;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "repeat_unit")
-    private RepeatUnit repeatUnit;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
@@ -120,6 +131,14 @@ public class Reminder implements Serializable {
         this.note = note;
     }
 
+    public ZonedDateTime getDueAt() {
+        return dueAt;
+    }
+
+    public void setDueAt(ZonedDateTime dueAt) {
+        this.dueAt = dueAt;
+    }
+
     public ZonedDateTime getSentAt() {
         return this.sentAt;
     }
@@ -144,6 +163,48 @@ public class Reminder implements Serializable {
 
     public void setResolvedAt(ZonedDateTime resolvedAt) {
         this.resolvedAt = resolvedAt;
+    }
+
+    public Integer getRepeatEvery() {
+        return this.repeatEvery;
+    }
+
+    public Reminder repeatEvery(Integer repeatEvery) {
+        this.setRepeatEvery(repeatEvery);
+        return this;
+    }
+
+    public void setRepeatEvery(Integer repeatEvery) {
+        this.repeatEvery = repeatEvery;
+    }
+
+    public RepeatUnit getRepeatUnit() {
+        return this.repeatUnit;
+    }
+
+    public Reminder repeatUnit(RepeatUnit repeatUnit) {
+        this.setRepeatUnit(repeatUnit);
+        return this;
+    }
+
+    public void setRepeatUnit(RepeatUnit repeatUnit) {
+        this.repeatUnit = repeatUnit;
+    }
+
+    public ReminderPriority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(ReminderPriority priority) {
+        this.priority = priority;
+    }
+
+    public Boolean getCanceled() {
+        return canceled;
+    }
+
+    public void setCanceled(Boolean canceled) {
+        this.canceled = canceled;
     }
 
     public ZonedDateTime getCreated() {
@@ -198,32 +259,6 @@ public class Reminder implements Serializable {
         this.updatedBy = updatedBy;
     }
 
-    public Integer getRepeatEvery() {
-        return this.repeatEvery;
-    }
-
-    public Reminder repeatEvery(Integer repeatEvery) {
-        this.setRepeatEvery(repeatEvery);
-        return this;
-    }
-
-    public void setRepeatEvery(Integer repeatEvery) {
-        this.repeatEvery = repeatEvery;
-    }
-
-    public RepeatUnit getRepeatUnit() {
-        return this.repeatUnit;
-    }
-
-    public Reminder repeatUnit(RepeatUnit repeatUnit) {
-        this.setRepeatUnit(repeatUnit);
-        return this;
-    }
-
-    public void setRepeatUnit(RepeatUnit repeatUnit) {
-        this.repeatUnit = repeatUnit;
-    }
-
     public Client getClient() {
         return this.client;
     }
@@ -256,22 +291,25 @@ public class Reminder implements Serializable {
         return getClass().hashCode();
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "Reminder{" +
-            "id=" + getId() +
-            ", motif='" + getMotif() + "'" +
-            ", status='" + getStatus() + "'" +
-            ", note='" + getNote() + "'" +
-            ", sentAt='" + getSentAt() + "'" +
-            ", resolvedAt='" + getResolvedAt() + "'" +
-            ", created='" + getCreated() + "'" +
-            ", createdBy='" + getCreatedBy() + "'" +
-            ", updated='" + getUpdated() + "'" +
-            ", updatedBy='" + getUpdatedBy() + "'" +
-            ", repeatEvery=" + getRepeatEvery() +
-            ", repeatUnit='" + getRepeatUnit() + "'" +
-            "}";
+            "id=" + id +
+            ", motif=" + motif +
+            ", status=" + status +
+            ", note='" + note + '\'' +
+            ", dueAt=" + dueAt +
+            ", sentAt=" + sentAt +
+            ", resolvedAt=" + resolvedAt +
+            ", repeatEvery=" + repeatEvery +
+            ", repeatUnit=" + repeatUnit +
+            ", priority=" + priority +
+            ", canceled=" + canceled +
+            ", created=" + created +
+            ", createdBy='" + createdBy + '\'' +
+            ", updated=" + updated +
+            ", updatedBy='" + updatedBy + '\'' +
+            ", client=" + client +
+            '}';
     }
 }
