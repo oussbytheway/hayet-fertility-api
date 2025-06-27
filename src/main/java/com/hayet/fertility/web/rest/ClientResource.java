@@ -5,12 +5,10 @@ import com.hayet.fertility.service.ClientService;
 import com.hayet.fertility.service.dto.ClientDTO;
 import com.hayet.fertility.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +38,6 @@ public class ClientResource {
     private String applicationName;
 
     private final ClientService clientService;
-
     private final ClientRepository clientRepository;
 
     public ClientResource(ClientService clientService, ClientRepository clientRepository) {
@@ -49,11 +46,12 @@ public class ClientResource {
     }
 
     /**
-     * {@code POST  /clients} : Create a new client.
+     * {@code POST /clients} : Create a new client.
      *
-     * @param clientDTO the clientDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new clientDTO, or with status {@code 400 (Bad Request)} if the client has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     * @param clientDTO the client data to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and body of the created clientDTO,
+     *         or status {@code 400 (Bad Request)} if the client already has an ID.
+     * @throws URISyntaxException if the URI syntax is incorrect.
      */
     @PostMapping("")
     public ResponseEntity<ClientDTO> createClient(@Valid @RequestBody ClientDTO clientDTO) throws URISyntaxException {
@@ -68,13 +66,14 @@ public class ClientResource {
     }
 
     /**
-     * {@code PUT  /clients/:id} : Updates an existing client.
+     * {@code PUT /clients/:id} : Update an existing client.
      *
-     * @param clientDTO the clientDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated clientDTO,
-     * or with status {@code 400 (Bad Request)} if the clientDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the clientDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     * @param clientDTO the client data to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and body of the updated clientDTO,
+     *         or status {@code 400 (Bad Request)} if the ID is missing,
+     *         or status {@code 500 (Internal Server Error)} if the client cannot be updated.
+     * @throws URISyntaxException if the URI syntax is incorrect.
+     * @throws AccessDeniedException if access is denied.
      */
     @PutMapping("/{id}")
     public ResponseEntity<ClientDTO> update(
@@ -85,9 +84,7 @@ public class ClientResource {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
 
-        if (!clientRepository.existsById(clientDTO.getId())) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
-        }
+        validateClientExists(clientDTO.getId());
 
         clientDTO = clientService.update(clientDTO);
         return ResponseEntity.ok()
@@ -96,10 +93,46 @@ public class ClientResource {
     }
 
     /**
-     * {@code GET  /clients} : get all the clients.
+     * {@code POST /clients/:id/archive} : Archive a client.
+     *
+     * @param id the ID of the client to archive.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and body of the archived client.
+     * @throws AccessDeniedException if access is denied.
+     */
+    @PostMapping("/{id}/archive")
+    public ResponseEntity<ClientDTO> archiveClient(@PathVariable("id") Long id) throws AccessDeniedException {
+        log.debug("REST request to archive Client : {}", id);
+        validateClientExists(id);
+
+        ClientDTO clientDTO = clientService.archive(id);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, clientDTO.getId().toString()))
+            .body(clientDTO);
+    }
+
+    /**
+     * {@code POST /clients/:id/restore} : Restore an archived client.
+     *
+     * @param id the ID of the client to restore.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and body of the restored client.
+     * @throws AccessDeniedException if access is denied.
+     */
+    @PostMapping("/{id}/restore")
+    public ResponseEntity<ClientDTO> restoreClient(@PathVariable("id") Long id) throws AccessDeniedException {
+        log.debug("REST request to restore Client : {}", id);
+        validateClientExists(id);
+
+        ClientDTO clientDTO = clientService.restore(id);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, clientDTO.getId().toString()))
+            .body(clientDTO);
+    }
+
+    /**
+     * {@code GET /clients} : Get all clients with pagination.
      *
      * @param pageable the pagination information.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of clients in body.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and a list of clients.
      */
     @GetMapping("")
     public ResponseEntity<List<ClientDTO>> getAllClients(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
@@ -110,10 +143,11 @@ public class ClientResource {
     }
 
     /**
-     * {@code GET  /clients/:id} : get the "id" client.
+     * {@code GET /clients/:id} : Get a single client by ID.
      *
-     * @param id the id of the clientDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the clientDTO, or with status {@code 404 (Not Found)}.
+     * @param id the ID of the client to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the client data,
+     *         or status {@code 404 (Not Found)} if the client is not found.
      */
     @GetMapping("/{id}")
     public ResponseEntity<ClientDTO> getClient(@PathVariable("id") Long id) {
@@ -123,10 +157,10 @@ public class ClientResource {
     }
 
     /**
-     * {@code DELETE  /clients/:id} : delete the "id" client.
+     * {@code DELETE /clients/:id} : Delete a client by ID.
      *
-     * @param id the id of the clientDTO to delete.
-     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     * @param id the ID of the client to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (No Content)}.
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteClient(@PathVariable("id") Long id) {
@@ -136,4 +170,17 @@ public class ClientResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
+
+    /**
+     * Validates that a client with the given ID exists.
+     *
+     * @param id the ID to check.
+     * @throws BadRequestAlertException if the client does not exist.
+     */
+    private void validateClientExists(Long id) {
+        if (!clientRepository.existsById(id)) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+    }
 }
+
