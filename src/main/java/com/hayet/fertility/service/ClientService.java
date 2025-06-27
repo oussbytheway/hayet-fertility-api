@@ -85,7 +85,7 @@ public class ClientService {
         log.debug("Request to update Client : {}", client);
         User authenticatedAdmin = userService.getUserWithAuthoritiesByLogin(SecurityUtils.getCurrentUserLogin().orElseThrow()).orElseThrow();
 
-        ClientDTO originalClient = findOne(client.getId()).orElseThrow(() -> new AccessDeniedException("Not found"));
+        ClientDTO originalClient = findOne(client.getId()).orElseThrow(() -> new AccessDeniedException("Client not found"));
 
         // Validate notification preference if provided
         if (client.getNotificationPreference() != null && !client.getNotificationPreference().isEmpty()) {

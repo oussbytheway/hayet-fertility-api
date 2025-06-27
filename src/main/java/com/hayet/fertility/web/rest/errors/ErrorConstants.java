@@ -14,6 +14,9 @@ public final class ErrorConstants {
     public static final URI LOGIN_ALREADY_USED_TYPE = URI.create(PROBLEM_BASE_URL + "/login-already-used");
     public static final String LAST_NAME_IS_REQUIRED = "01";
     public static final String AT_LEAST_ONE_NOTIFICATION_PREFERENCE_IS_REQUIRED = "02";
+    public static final String MOTIF_IS_REQUIRED = "03";
+    public static final String DUE_DATE_MUST_BE_IN_FUTURE = "04";
+    public static final String REMINDER_NEAR_EXECUTION_CANNOT_BE_MODIFIED = "05";
 
     private ErrorConstants() {}
 }

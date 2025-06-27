@@ -156,6 +156,22 @@ public class ReminderDTO implements Serializable {
         this.repeatUnit = repeatUnit;
     }
 
+    public ReminderPriority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(ReminderPriority priority) {
+        this.priority = priority;
+    }
+
+    public Boolean getCanceled() {
+        return canceled;
+    }
+
+    public void setCanceled(Boolean canceled) {
+        this.canceled = canceled;
+    }
+
     public Long getClient() {
         return client;
     }
@@ -202,12 +218,14 @@ public class ReminderDTO implements Serializable {
             ", dueAt=" + dueAt +
             ", sentAt=" + sentAt +
             ", resolvedAt=" + resolvedAt +
+            ", repeatEvery=" + repeatEvery +
+            ", repeatUnit=" + repeatUnit +
+            ", priority=" + priority +
+            ", canceled=" + canceled +
             ", created=" + created +
             ", createdBy='" + createdBy + '\'' +
             ", updated=" + updated +
             ", updatedBy='" + updatedBy + '\'' +
-            ", repeatEvery=" + repeatEvery +
-            ", repeatUnit=" + repeatUnit +
             ", client=" + client +
             ", clientFullName='" + clientFullName + '\'' +
             '}';

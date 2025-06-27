@@ -72,19 +72,15 @@ public class ReminderResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated reminderDTO,
      * or with status {@code 400 (Bad Request)} if the reminderDTO is not valid,
      * or with status {@code 500 (Internal Server Error)} if the reminderDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
     public ResponseEntity<ReminderDTO> updateReminder(
         @PathVariable(value = "id", required = false) final Long id,
         @RequestBody ReminderDTO reminderDTO
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to update Reminder : {}, {}", id, reminderDTO);
         if (reminderDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
-        }
-        if (!Objects.equals(id, reminderDTO.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
         if (!reminderRepository.existsById(id)) {
@@ -97,40 +93,52 @@ public class ReminderResource {
             .body(reminderDTO);
     }
 
-    /**
-     * {@code PATCH  /reminders/:id} : Partial updates given fields of an existing reminder, field will ignore if it is null
-     *
-     * @param id the id of the reminderDTO to save.
-     * @param reminderDTO the reminderDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated reminderDTO,
-     * or with status {@code 400 (Bad Request)} if the reminderDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the reminderDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the reminderDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
-    @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<ReminderDTO> partialUpdateReminder(
-        @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody ReminderDTO reminderDTO
-    ) throws URISyntaxException {
-        LOG.debug("REST request to partial update Reminder partially : {}, {}", id, reminderDTO);
-        if (reminderDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
-        }
-        if (!Objects.equals(id, reminderDTO.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
-        }
+    @PostMapping("/{id}/activate")
+    public ResponseEntity<ReminderDTO> activateReminder(
+        @PathVariable(value = "id") final Long id
+    ) {
+        LOG.debug("REST request to activate Reminder : {}", id);
 
         if (!reminderRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<ReminderDTO> result = reminderService.partialUpdate(reminderDTO);
+        ReminderDTO reminderDTO = reminderService.activate(id);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, reminderDTO.getId().toString()))
+            .body(reminderDTO);
+    }
 
-        return ResponseUtil.wrapOrNotFound(
-            result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, reminderDTO.getId().toString())
-        );
+    @PostMapping("/{id}/deactivate")
+    public ResponseEntity<ReminderDTO> deactivateReminder(
+        @PathVariable(value = "id") final Long id
+    ) {
+        LOG.debug("REST request to deactivate Reminder : {}", id);
+
+        if (!reminderRepository.existsById(id)) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+
+        ReminderDTO reminderDTO = reminderService.deactivate(id);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, reminderDTO.getId().toString()))
+            .body(reminderDTO);
+    }
+
+    @PostMapping("/{id}/resolve")
+    public ResponseEntity<ReminderDTO> resolveReminder(
+        @PathVariable(value = "id") final Long id
+    ) {
+        LOG.debug("REST request to resolve Reminder : {}", id);
+
+        if (!reminderRepository.existsById(id)) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+
+        ReminderDTO reminderDTO = reminderService.resolve(id);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, reminderDTO.getId().toString()))
+            .body(reminderDTO);
     }
 
     /**
