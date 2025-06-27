@@ -49,6 +49,15 @@
       "fieldType": "String"
     },
     {
+      "fieldName": "active",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "priority",
+      "fieldType": "ReminderPriority",
+      "fieldValues": "LOW,MEDIUM,HIGH,URGENT"
+    },
+    {
       "fieldName": "repeatEvery",
       "fieldType": "Integer"
     },

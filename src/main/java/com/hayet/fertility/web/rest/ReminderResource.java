@@ -29,7 +29,7 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api/reminders")
 public class ReminderResource {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ReminderResource.class);
+    private static final Logger log = LoggerFactory.getLogger(ReminderResource.class);
 
     private static final String ENTITY_NAME = "reminder";
 
@@ -54,7 +54,7 @@ public class ReminderResource {
      */
     @PostMapping("")
     public ResponseEntity<ReminderDTO> createReminder(@RequestBody ReminderDTO reminderDTO) throws URISyntaxException {
-        LOG.debug("REST request to save Reminder : {}", reminderDTO);
+        log.debug("REST request to save Reminder : {}", reminderDTO);
         if (reminderDTO.getId() != null) {
             throw new BadRequestAlertException("A new reminder cannot already have an ID", ENTITY_NAME, "idexists");
         }
@@ -78,14 +78,14 @@ public class ReminderResource {
         @PathVariable(value = "id", required = false) final Long id,
         @RequestBody ReminderDTO reminderDTO
     ) {
-        LOG.debug("REST request to update Reminder : {}, {}", id, reminderDTO);
+        log.debug("REST request to update Reminder : {}, {}", id, reminderDTO);
         if (reminderDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-
-        if (!reminderRepository.existsById(id)) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        if (!Objects.equals(id, reminderDTO.getId())) {
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
+        validateReminderExists(id);
 
         reminderDTO = reminderService.update(reminderDTO);
         return ResponseEntity.ok()
@@ -93,15 +93,16 @@ public class ReminderResource {
             .body(reminderDTO);
     }
 
+    /**
+     * {@code GET  /reminders/{id}/activate} : activate a reminder.
+     *
+     * @param id the reminder's ID.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the reminder in body.
+     */
     @PostMapping("/{id}/activate")
-    public ResponseEntity<ReminderDTO> activateReminder(
-        @PathVariable(value = "id") final Long id
-    ) {
-        LOG.debug("REST request to activate Reminder : {}", id);
-
-        if (!reminderRepository.existsById(id)) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
-        }
+    public ResponseEntity<ReminderDTO> activateReminder(@PathVariable("id") Long id) {
+        log.debug("REST request to activate Reminder : {}", id);
+        validateReminderExists(id);
 
         ReminderDTO reminderDTO = reminderService.activate(id);
         return ResponseEntity.ok()
@@ -109,15 +110,16 @@ public class ReminderResource {
             .body(reminderDTO);
     }
 
+    /**
+     * {@code GET  /reminders/{id}/deactivate} : deactivate a reminder.
+     *
+     * @param id the reminder's ID.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the reminder in body.
+     */
     @PostMapping("/{id}/deactivate")
-    public ResponseEntity<ReminderDTO> deactivateReminder(
-        @PathVariable(value = "id") final Long id
-    ) {
-        LOG.debug("REST request to deactivate Reminder : {}", id);
-
-        if (!reminderRepository.existsById(id)) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
-        }
+    public ResponseEntity<ReminderDTO> deactivateReminder(@PathVariable("id") Long id) {
+        log.debug("REST request to deactivate Reminder : {}", id);
+        validateReminderExists(id);
 
         ReminderDTO reminderDTO = reminderService.deactivate(id);
         return ResponseEntity.ok()
@@ -125,15 +127,16 @@ public class ReminderResource {
             .body(reminderDTO);
     }
 
+    /**
+     * {@code GET  /reminders/{id}/resolve} : resolve a reminder.
+     *
+     * @param id the reminder's ID.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the reminder in body.
+     */
     @PostMapping("/{id}/resolve")
-    public ResponseEntity<ReminderDTO> resolveReminder(
-        @PathVariable(value = "id") final Long id
-    ) {
-        LOG.debug("REST request to resolve Reminder : {}", id);
-
-        if (!reminderRepository.existsById(id)) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
-        }
+    public ResponseEntity<ReminderDTO> resolveReminder(@PathVariable("id") Long id) {
+        log.debug("REST request to resolve Reminder : {}", id);
+        validateReminderExists(id);
 
         ReminderDTO reminderDTO = reminderService.resolve(id);
         return ResponseEntity.ok()
@@ -149,7 +152,7 @@ public class ReminderResource {
      */
     @GetMapping("")
     public ResponseEntity<List<ReminderDTO>> getAllReminders(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
-        LOG.debug("REST request to get a page of Reminders");
+        log.debug("REST request to get a page of Reminders");
         Page<ReminderDTO> page = reminderService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
@@ -163,7 +166,7 @@ public class ReminderResource {
      */
     @GetMapping("/{id}")
     public ResponseEntity<ReminderDTO> getReminder(@PathVariable("id") Long id) {
-        LOG.debug("REST request to get Reminder : {}", id);
+        log.debug("REST request to get Reminder : {}", id);
         Optional<ReminderDTO> reminderDTO = reminderService.findOne(id);
         return ResponseUtil.wrapOrNotFound(reminderDTO);
     }
@@ -176,10 +179,17 @@ public class ReminderResource {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReminder(@PathVariable("id") Long id) {
-        LOG.debug("REST request to delete Reminder : {}", id);
+        log.debug("REST request to delete Reminder : {}", id);
         reminderService.delete(id);
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    // Validates that reminder exists, throws BadRequestAlertException if not found
+    private void validateReminderExists(Long id) {
+        if (!reminderRepository.existsById(id)) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
     }
 }

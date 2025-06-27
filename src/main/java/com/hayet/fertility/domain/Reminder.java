@@ -58,8 +58,8 @@ public class Reminder implements Serializable {
     @Column(name = "repeat_unit")
     private ReminderPriority priority;
 
-    @Column(name = "canceled")
-    private Boolean canceled;
+    @Column(name = "active")
+    private Boolean active;
 
     @Column(name = "created")
     private ZonedDateTime created;
@@ -199,12 +199,12 @@ public class Reminder implements Serializable {
         this.priority = priority;
     }
 
-    public Boolean getCanceled() {
-        return canceled;
+    public Boolean getActive() {
+        return active;
     }
 
-    public void setCanceled(Boolean canceled) {
-        this.canceled = canceled;
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     public ZonedDateTime getCreated() {
@@ -304,7 +304,7 @@ public class Reminder implements Serializable {
             ", repeatEvery=" + repeatEvery +
             ", repeatUnit=" + repeatUnit +
             ", priority=" + priority +
-            ", canceled=" + canceled +
+            ", active=" + active +
             ", created=" + created +
             ", createdBy='" + createdBy + '\'' +
             ", updated=" + updated +

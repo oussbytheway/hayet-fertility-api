@@ -38,7 +38,7 @@ public class ReminderDTO implements Serializable {
 
     private ReminderPriority priority;
 
-    private Boolean canceled;
+    private Boolean active;
 
     private ZonedDateTime created;
 
@@ -164,12 +164,12 @@ public class ReminderDTO implements Serializable {
         this.priority = priority;
     }
 
-    public Boolean getCanceled() {
-        return canceled;
+    public Boolean getActive() {
+        return active;
     }
 
-    public void setCanceled(Boolean canceled) {
-        this.canceled = canceled;
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     public Long getClient() {
@@ -221,7 +221,7 @@ public class ReminderDTO implements Serializable {
             ", repeatEvery=" + repeatEvery +
             ", repeatUnit=" + repeatUnit +
             ", priority=" + priority +
-            ", canceled=" + canceled +
+            ", active=" + active +
             ", created=" + created +
             ", createdBy='" + createdBy + '\'' +
             ", updated=" + updated +

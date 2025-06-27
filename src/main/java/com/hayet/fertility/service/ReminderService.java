@@ -10,6 +10,7 @@ import com.hayet.fertility.service.dto.ReminderDTO;
 import com.hayet.fertility.service.mapper.ReminderMapper;
 
 import java.time.ZonedDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 import com.hayet.fertility.web.rest.errors.BadRequestAlertException;
@@ -43,14 +44,14 @@ public class ReminderService {
     }
 
     /**
-     * Save a reminder.
+     * Create a new reminder.
      *
-     * @param reminder the entity to save.
+     * @param reminder the entity to create.
      * @return the persisted entity.
      */
     public ReminderDTO create(ReminderDTO reminder) {
         log.debug("Request to create a Reminder : {}", reminder);
-        User authenticatedAdmin = userService.getUserWithAuthoritiesByLogin(SecurityUtils.getCurrentUserLogin().orElseThrow()).orElseThrow();
+        User authenticatedAdmin = getCurrentAuthenticatedUser();
 
         if (reminder.getMotif() == null) {
             throw new BadRequestAlertException(
@@ -59,13 +60,7 @@ public class ReminderService {
                 ErrorConstants.MOTIF_IS_REQUIRED
             );
         }
-        if (reminder.getDueAt() == null || !reminder.getDueAt().isAfter(ZonedDateTime.now())) {
-            throw new BadRequestAlertException(
-                "The due date must be in the future",
-                ENTITY_NAME,
-                ErrorConstants.DUE_DATE_MUST_BE_IN_FUTURE
-            );
-        }
+        validateFutureDueDate(reminder.getDueAt());
 
         reminder.setStatus(ReminderStatus.SCHEDULED);
         reminder.setPriority(reminder.getPriority() != null ? reminder.getPriority() : ReminderPriority.LOW);
@@ -76,103 +71,93 @@ public class ReminderService {
     }
 
     /**
-     * Update a reminder.
+     * Update an existing reminder with selective field updates.
      *
      * @param reminder the entity to update.
      * @return the persisted entity.
      */
     public ReminderDTO update(ReminderDTO reminder) throws AccessDeniedException {
         log.debug("Request to update Reminder : {}", reminder);
-        User authenticatedAdmin = userService.getUserWithAuthoritiesByLogin(SecurityUtils.getCurrentUserLogin().orElseThrow()).orElseThrow();
+        User authenticatedAdmin = getCurrentAuthenticatedUser();
+        ReminderDTO originalReminder = getReminderOrThrow(reminder.getId());
 
-        ReminderDTO originalReminder = findOne(reminder.getId()).orElseThrow(() -> new AccessDeniedException("Reminder not found"));
-
-        // Validate and update fields if provided
-        if (reminder.getMotif() != null) {
+        // Update motif if provided
+        if (reminder.getMotif() != null && !Objects.equals(reminder.getMotif(), originalReminder.getMotif())) {
             originalReminder.setMotif(reminder.getMotif());
         }
 
-        if (reminder.getDueAt() != null) {
-            if (!reminder.getDueAt().isAfter(ZonedDateTime.now())) {
-                throw new BadRequestAlertException(
-                    "The due date must be in the future",
-                    ENTITY_NAME,
-                    ErrorConstants.DUE_DATE_MUST_BE_IN_FUTURE
-                );
-            }
-            if (reminder.getDueAt().isBefore(ZonedDateTime.now().plusMinutes(1))) {
-                throw new BadRequestAlertException(
-                    "Cannot update reminder due in 1 minutes or less",
-                    ENTITY_NAME,
-                    ErrorConstants.REMINDER_NEAR_EXECUTION_CANNOT_BE_MODIFIED
-                );
-            }
+        // Update due date with validation
+        if (reminder.getDueAt() != null && !Objects.equals(reminder.getMotif(), originalReminder.getMotif())) {
+            validateReminderNotNearExecution(reminder.getDueAt());
+            validateFutureDueDate(reminder.getDueAt());
             originalReminder.setDueAt(reminder.getDueAt());
+        } else {
+            validateReminderNotNearExecution(reminder.getDueAt());
         }
 
-        if (reminder.getNote() != null) {
-            originalReminder.setNote(reminder.getNote());
-        }
-        if (reminder.getSentAt() != null) {
-            originalReminder.setSentAt(reminder.getSentAt());
-        }
-        if (reminder.getRepeatEvery() != null) {
-            originalReminder.setRepeatEvery(reminder.getRepeatEvery());
-        }
-        if (reminder.getRepeatUnit() != null) {
-            originalReminder.setRepeatUnit(reminder.getRepeatUnit());
-        }
-        if (reminder.getPriority() != null) {
-            originalReminder.setPriority(reminder.getPriority());
-        }
-        if (reminder.getClient() != null) {
-            originalReminder.setClient(reminder.getClient());
-        }
+        // Update optional fields if changed
+        updateOptionalFields(originalReminder, reminder);
 
         originalReminder.setUpdated(ZonedDateTime.now());
         originalReminder.setUpdatedBy(authenticatedAdmin.getEmail());
-
-        return save(originalReminder);
-    }
-
-    public ReminderDTO activate(Long id) throws AccessDeniedException {
-        log.debug("Request to activate reminder : {}", id);
-        User authenticatedAdmin = userService.getUserWithAuthoritiesByLogin(SecurityUtils.getCurrentUserLogin().orElseThrow()).orElseThrow();
-
-        ReminderDTO originalReminder = findOne(id).orElseThrow(() -> new AccessDeniedException("Reminder not found"));
-        originalReminder.setCanceled(true);
-        originalReminder.setUpdated(ZonedDateTime.now());
-        originalReminder.setUpdatedBy(authenticatedAdmin.getEmail());
-
-        return save(originalReminder);
-    }
-
-    public ReminderDTO deactivate(Long id) throws AccessDeniedException {
-        log.debug("Request to deactivate reminder : {}", id);
-        User authenticatedAdmin = userService.getUserWithAuthoritiesByLogin(SecurityUtils.getCurrentUserLogin().orElseThrow()).orElseThrow();
-
-        ReminderDTO originalReminder = findOne(id).orElseThrow(() -> new AccessDeniedException("Reminder not found"));
-        originalReminder.setCanceled(false);
-        originalReminder.setUpdated(ZonedDateTime.now());
-        originalReminder.setUpdatedBy(authenticatedAdmin.getEmail());
-
-        return save(originalReminder);
-    }
-
-    public ReminderDTO resolve(Long id) throws AccessDeniedException {
-        log.debug("Request to resolve reminder : {}", id);
-
-        ReminderDTO originalReminder = findOne(id).orElseThrow(() -> new AccessDeniedException("Reminder not found"));
-        originalReminder.setResolvedAt(ZonedDateTime.now());
 
         return save(originalReminder);
     }
 
     /**
+     * Activate an existing reminder.
+     *
+     * @param id the ID of the reminder to activate.
+     * @return the persisted reminder.
+     */
+    public ReminderDTO activate(Long id) throws AccessDeniedException {
+        log.debug("Request to activate reminder : {}", id);
+        User authenticatedAdmin = getCurrentAuthenticatedUser();
+        ReminderDTO reminder = getReminderOrThrow(id);
+
+        reminder.setActive(true);
+        updateAuditFields(reminder, authenticatedAdmin);
+
+        return save(reminder);
+    }
+
+    /**
+     * Deactivate an existing reminder.
+     *
+     * @param id the ID of the reminder to deactivate.
+     * @return the persisted reminder.
+     */
+    public ReminderDTO deactivate(Long id) throws AccessDeniedException {
+        log.debug("Request to deactivate reminder : {}", id);
+        User authenticatedAdmin = getCurrentAuthenticatedUser();
+        ReminderDTO reminder = getReminderOrThrow(id);
+
+        reminder.setActive(false);
+        updateAuditFields(reminder, authenticatedAdmin);
+
+        return save(reminder);
+    }
+
+    /**
+     * Resolve an existing reminder.
+     *
+     * @param id the ID of the reminder to resolve.
+     * @return the persisted reminder.
+     */
+    public ReminderDTO resolve(Long id) throws AccessDeniedException {
+        log.debug("Request to resolve reminder : {}", id);
+        ReminderDTO reminder = getReminderOrThrow(id);
+
+        reminder.setResolvedAt(ZonedDateTime.now());
+
+        return save(reminder);
+    }
+
+    /**
      * Save a reminder.
      *
-     * @param reminderDTO the entity to save.
-     * @return the persisted entity.
+     * @param reminderDTO the reminder to save.
+     * @return the persisted reminder.
      */
     public ReminderDTO save(ReminderDTO reminderDTO) {
         log.debug("Request to save Reminder : {}", reminderDTO);
@@ -213,5 +198,62 @@ public class ReminderService {
     public void delete(Long id) {
         log.debug("Request to delete Reminder : {}", id);
         reminderRepository.deleteById(id);
+    }
+
+    // Gets current authenticated user or throws if not found
+    private User getCurrentAuthenticatedUser() {
+        return userService.getUserWithAuthoritiesByLogin(SecurityUtils.getCurrentUserLogin().orElseThrow()).orElseThrow();
+    }
+
+    // Retrieves reminder by ID or throws AccessDeniedException if not found
+    private ReminderDTO getReminderOrThrow(Long id) throws AccessDeniedException {
+        return findOne(id).orElseThrow(() -> new AccessDeniedException("Reminder not found"));
+    }
+
+    // Validates that due date is in the future
+    private void validateFutureDueDate(ZonedDateTime dueAt) {
+        if (dueAt == null || !dueAt.isAfter(ZonedDateTime.now())) {
+            throw new BadRequestAlertException(
+                "The due date must be in the future",
+                ENTITY_NAME,
+                ErrorConstants.DUE_DATE_MUST_BE_IN_FUTURE
+            );
+        }
+    }
+
+    // Validates that reminder is not too close to execution time
+    private void validateReminderNotNearExecution(ZonedDateTime dueAt) {
+        if (dueAt.isBefore(ZonedDateTime.now().plusMinutes(1))) {
+            throw new BadRequestAlertException(
+                "Cannot update reminder due in 1 minutes or less",
+                ENTITY_NAME,
+                ErrorConstants.REMINDER_NEAR_EXECUTION_CANNOT_BE_MODIFIED
+            );
+        }
+    }
+
+    // Updates optional fields from source to target reminder
+    private void updateOptionalFields(ReminderDTO target, ReminderDTO source) {
+        if (source.getNote() != null && !Objects.equals(target.getNote(), source.getNote())) {
+            target.setNote(source.getNote());
+        }
+        if (source.getRepeatEvery() != null && !Objects.equals(target.getRepeatEvery(), source.getRepeatEvery())) {
+            target.setRepeatEvery(source.getRepeatEvery());
+        }
+        if (source.getRepeatUnit() != null && !Objects.equals(target.getRepeatUnit(), source.getRepeatUnit())) {
+            target.setRepeatUnit(source.getRepeatUnit());
+        }
+        if (source.getPriority() != null && !Objects.equals(target.getPriority(), source.getPriority())) {
+            target.setPriority(source.getPriority());
+        }
+        if (source.getClient() != null && !Objects.equals(target.getClient(), source.getClient())) {
+            target.setClient(source.getClient());
+        }
+    }
+
+    // Updates audit fields for reminder modifications
+    private void updateAuditFields(ReminderDTO reminder, User user) {
+        reminder.setUpdated(ZonedDateTime.now());
+        reminder.setUpdatedBy(user.getEmail());
     }
 }

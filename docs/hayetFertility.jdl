@@ -107,6 +107,8 @@ entity Reminder {
   updatedBy String
   repeatEvery Integer
   repeatUnit RepeatUnit
+  priority ReminderPriority
+  active Boolean
 }
 
 enum NotificationChannel {
@@ -149,6 +151,12 @@ enum ReminderMotif {
   MOTIF1,
   MOTIF2,
   MOTIF3
+}
+enum ReminderPriority {
+  LOW,
+  MEDIUM,
+  HIGH,
+  URGENT
 }
 enum ReminderStatus {
   SCHEDULED,

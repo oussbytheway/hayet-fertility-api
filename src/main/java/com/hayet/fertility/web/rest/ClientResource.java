@@ -32,7 +32,7 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api/clients")
 public class ClientResource {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ClientResource.class);
+    private static final Logger log = LoggerFactory.getLogger(ClientResource.class);
 
     private static final String ENTITY_NAME = "client";
 
@@ -57,7 +57,7 @@ public class ClientResource {
      */
     @PostMapping("")
     public ResponseEntity<ClientDTO> createClient(@Valid @RequestBody ClientDTO clientDTO) throws URISyntaxException {
-        LOG.debug("REST request to save Client : {}", clientDTO);
+        log.debug("REST request to save Client : {}", clientDTO);
         if (clientDTO.getId() != null) {
             throw new BadRequestAlertException("A new client cannot already have an ID", ENTITY_NAME, "idexists");
         }
@@ -80,7 +80,7 @@ public class ClientResource {
     public ResponseEntity<ClientDTO> update(
         @Valid @RequestBody ClientDTO clientDTO
     ) throws URISyntaxException, AccessDeniedException {
-        LOG.debug("REST request to update Client : {}", clientDTO.getId());
+        log.debug("REST request to update Client : {}", clientDTO.getId());
         if (clientDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -103,7 +103,7 @@ public class ClientResource {
      */
     @GetMapping("")
     public ResponseEntity<List<ClientDTO>> getAllClients(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
-        LOG.debug("REST request to get a page of Clients");
+        log.debug("REST request to get a page of Clients");
         Page<ClientDTO> page = clientService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
@@ -117,7 +117,7 @@ public class ClientResource {
      */
     @GetMapping("/{id}")
     public ResponseEntity<ClientDTO> getClient(@PathVariable("id") Long id) {
-        LOG.debug("REST request to get Client : {}", id);
+        log.debug("REST request to get Client : {}", id);
         Optional<ClientDTO> clientDTO = clientService.findOne(id);
         return ResponseUtil.wrapOrNotFound(clientDTO);
     }
@@ -130,7 +130,7 @@ public class ClientResource {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteClient(@PathVariable("id") Long id) {
-        LOG.debug("REST request to delete Client : {}", id);
+        log.debug("REST request to delete Client : {}", id);
         clientService.delete(id);
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
