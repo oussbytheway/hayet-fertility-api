@@ -55,7 +55,7 @@ public class Reminder implements Serializable {
     private RepeatUnit repeatUnit;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "repeat_unit")
+    @Column(name = "priority")
     private ReminderPriority priority;
 
     @Column(name = "active")

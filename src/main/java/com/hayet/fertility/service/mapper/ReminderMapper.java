@@ -11,12 +11,10 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public interface ReminderMapper extends EntityMapper<ReminderDTO, Reminder> {
 
-    @Mapping(source = "reminder.id", target = "reminderId")
     @Mapping(source = "client.id", target = "clientId")
     @Mapping(source = "client", target = "clientFullName", qualifiedByName = "clientToFullName")
     ReminderDTO toDto(Reminder reminder);
 
-    @Mapping(source = "reminderId", target = "reminder")
     @Mapping(source = "clientId", target = "client")
     Reminder toEntity(ReminderDTO dto);
 

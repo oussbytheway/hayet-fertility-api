@@ -1,10 +1,38 @@
+                   █
+          ████     ██
+        ███████  ██████
+        ████████  ██████
+     █   ██████    ██████
+     ██              █████
+     ███          █   ████        ███      ███    ████████    ███     ███  ███████████████████████
+    ████          ██  ████        ███      ███   ████  █████  ███     ███  ███             ███
+    ████ ██      ███ █████        ███      ███  ███      ███  ███     ███  ███             ███
+   ████████     █████████         ████████████  ███      ███  █████ █████  ████████        ███
+   ███████     █████████          ███     ████  ████████████    ███████    ████            ███
+  ███████      ███████            ███      ███  ████████████      ███      ███             ███
+  ███████  █   ██████             ███      ███  ███      ███      ███      ███████████     ███
+  ███████ ██   █████              ███      ███   ██      ███      ███      ██████████      ███
+  ███████  ██   ████
+   ███████ ████ ████
+    ████████████ ███              █    █              █         █      █       █           █
+      ████████████ █                     █       █     █     █   █        █   █         █    █
+        ██████████
+           ████████
+              █████
+                ████
+                 ███
+                  ██
+                  █
 
-  ${AnsiColor.GREEN}      ██╗${AnsiColor.RED} ██╗   ██╗ ████████╗ ███████╗   ██████╗ ████████╗ ████████╗ ███████╗
-  ${AnsiColor.GREEN}      ██║${AnsiColor.RED} ██║   ██║ ╚══██╔══╝ ██╔═══██╗ ██╔════╝ ╚══██╔══╝ ██╔═════╝ ██╔═══██╗
-  ${AnsiColor.GREEN}      ██║${AnsiColor.RED} ████████║    ██║    ███████╔╝ ╚█████╗     ██║    ██████╗   ███████╔╝
-  ${AnsiColor.GREEN}██╗   ██║${AnsiColor.RED} ██╔═══██║    ██║    ██╔════╝   ╚═══██╗    ██║    ██╔═══╝   ██╔══██║
-  ${AnsiColor.GREEN}╚██████╔╝${AnsiColor.RED} ██║   ██║ ████████╗ ██║       ██████╔╝    ██║    ████████╗ ██║  ╚██╗
-  ${AnsiColor.GREEN} ╚═════╝ ${AnsiColor.RED} ╚═╝   ╚═╝ ╚═══════╝ ╚═╝       ╚═════╝     ╚═╝    ╚═══════╝ ╚═╝   ╚═╝
+${AnsiColor.BRIGHT_CYAN}╔═══════════════════════════════════════════════════════════╗
+${AnsiColor.BRIGHT_CYAN}║  💫 ${AnsiColor.BRIGHT_WHITE}Hayet Fertility Clinic${AnsiColor.BRIGHT_CYAN} – Client Management System 💫 ║
+${AnsiColor.BRIGHT_CYAN}╚═══════════════════════════════════════════════════════════╝
+${AnsiColor.BRIGHT_MAGENTA}
+${AnsiColor.BRIGHT_GREEN}🚀 Spring Boot ${spring-boot.version} ${AnsiColor.BRIGHT_YELLOW}| ${AnsiColor.BRIGHT_RED}🎯 Profile(s): ${spring.profiles.active}
+${AnsiColor.BRIGHT_BLUE}🌐 https://www.centrehayet.com/
+${AnsiColor.BRIGHT_BLUE}⚡ Powered by JHipster 🤓 ${AnsiColor.BRIGHT_GREEN}⚡
 
-${AnsiColor.BRIGHT_BLUE}:: JHipster 🤓  :: Running Spring Boot ${spring-boot.version} :: Startup profile(s) ${spring.profiles.active} ::
-:: https://www.jhipster.tech ::${AnsiColor.DEFAULT}
+ ${AnsiColor.BRIGHT_YELLOW}════════════════════════════════════════════════════════════════════════════════
+ ${AnsiColor.BRIGHT_WHITE}  "Nurturing hope, supporting families, celebrating new beginnings" 🌱
+ ${AnsiColor.BRIGHT_YELLOW}════════════════════════════════════════════════════════════════════════════════
+${AnsiColor.DEFAULT}

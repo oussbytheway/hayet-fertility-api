@@ -246,8 +246,8 @@ public class ReminderService {
         if (source.getPriority() != null && !Objects.equals(target.getPriority(), source.getPriority())) {
             target.setPriority(source.getPriority());
         }
-        if (source.getClient() != null && !Objects.equals(target.getClient(), source.getClient())) {
-            target.setClient(source.getClient());
+        if (source.getClientId() != null && !Objects.equals(target.getClientId(), source.getClientId())) {
+            target.setClientId(source.getClientId());
         }
     }
 

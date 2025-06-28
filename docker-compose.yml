@@ -3,5 +3,5 @@ name: hayetfertility
 services:
   postgresql:
     extends:
-      file: ./postgresql.yml
+      file: src/main/docker/postgresql.yml
       service: postgresql

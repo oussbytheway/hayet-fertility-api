@@ -57,26 +57,6 @@ public class MessageInstanceService {
     }
 
     /**
-     * Partially update a messageInstance.
-     *
-     * @param messageInstanceDTO the entity to update partially.
-     * @return the persisted entity.
-     */
-    public Optional<MessageInstanceDTO> partialUpdate(MessageInstanceDTO messageInstanceDTO) {
-        LOG.debug("Request to partially update MessageInstance : {}", messageInstanceDTO);
-
-        return messageInstanceRepository
-            .findById(messageInstanceDTO.getId())
-            .map(existingMessageInstance -> {
-                messageInstanceMapper.partialUpdate(existingMessageInstance, messageInstanceDTO);
-
-                return existingMessageInstance;
-            })
-            .map(messageInstanceRepository::save)
-            .map(messageInstanceMapper::toDto);
-    }
-
-    /**
      * Get all the messageInstances.
      *
      * @param pageable the pagination information.

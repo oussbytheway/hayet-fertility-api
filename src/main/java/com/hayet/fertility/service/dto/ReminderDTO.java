@@ -4,9 +4,6 @@ import com.hayet.fertility.domain.enumeration.ReminderMotif;
 import com.hayet.fertility.domain.enumeration.ReminderPriority;
 import com.hayet.fertility.domain.enumeration.ReminderStatus;
 import com.hayet.fertility.domain.enumeration.RepeatUnit;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
@@ -48,7 +45,7 @@ public class ReminderDTO implements Serializable {
 
     private String updatedBy;
 
-    private Long client;
+    private Long clientId;
 
     private String clientFullName;
 
@@ -172,12 +169,12 @@ public class ReminderDTO implements Serializable {
         this.active = active;
     }
 
-    public Long getClient() {
-        return client;
+    public Long getClientId() {
+        return clientId;
     }
 
-    public void setClient(Long client) {
-        this.client = client;
+    public void setClientId(Long clientId) {
+        this.clientId = clientId;
     }
 
     public String getClientFullName() {
@@ -226,7 +223,7 @@ public class ReminderDTO implements Serializable {
             ", createdBy='" + createdBy + '\'' +
             ", updated=" + updated +
             ", updatedBy='" + updatedBy + '\'' +
-            ", client=" + client +
+            ", clientId=" + clientId +
             ", clientFullName='" + clientFullName + '\'' +
             '}';
     }
