@@ -12,11 +12,11 @@ public final class ErrorConstants {
     public static final URI INVALID_PASSWORD_TYPE = URI.create(PROBLEM_BASE_URL + "/invalid-password");
     public static final URI EMAIL_ALREADY_USED_TYPE = URI.create(PROBLEM_BASE_URL + "/email-already-used");
     public static final URI LOGIN_ALREADY_USED_TYPE = URI.create(PROBLEM_BASE_URL + "/login-already-used");
-    public static final String LAST_NAME_IS_REQUIRED = "01";
-    public static final String AT_LEAST_ONE_NOTIFICATION_PREFERENCE_IS_REQUIRED = "02";
-    public static final String MOTIF_IS_REQUIRED = "03";
-    public static final String DUE_DATE_MUST_BE_IN_FUTURE = "04";
-    public static final String REMINDER_NEAR_EXECUTION_CANNOT_BE_MODIFIED = "05";
+    public static final String LAST_NAME_IS_REQUIRED = "E01";
+    public static final String AT_LEAST_ONE_NOTIFICATION_PREFERENCE_IS_REQUIRED = "E02";
+    public static final String MOTIF_IS_REQUIRED = "E03";
+    public static final String DUE_DATE_MUST_BE_IN_FUTURE = "E04";
+    public static final String REMINDER_NEAR_EXECUTION_CANNOT_BE_MODIFIED = "E05";
 
     private ErrorConstants() {}
 }

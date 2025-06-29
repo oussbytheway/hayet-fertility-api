@@ -24,9 +24,8 @@ spring:
   devtools:
     restart:
       enabled: false
-      additional-exclude: static/**
     livereload:
-      enabled: false # we use Webpack dev server + BrowserSync for livereload
+      enabled: false
   jackson:
     serialization:
       indent-output: true

@@ -142,6 +142,11 @@ public class Reminder implements Serializable {
         return dueAt;
     }
 
+    public Reminder dueAt(ZonedDateTime dueAt) {
+        this.dueAt = dueAt;
+        return this;
+    }
+
     public void setDueAt(ZonedDateTime dueAt) {
         this.dueAt = dueAt;
     }
@@ -202,12 +207,22 @@ public class Reminder implements Serializable {
         return priority;
     }
 
+    public Reminder priority(ReminderPriority priority) {
+        this.priority = priority;
+        return this;
+    }
+
     public void setPriority(ReminderPriority priority) {
         this.priority = priority;
     }
 
     public Boolean getActive() {
         return active;
+    }
+
+    public Reminder active(Boolean active) {
+        this.active = active;
+        return this;
     }
 
     public void setActive(Boolean active) {
@@ -218,13 +233,13 @@ public class Reminder implements Serializable {
         return this.client;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
     public Reminder client(Client client) {
         this.setClient(client);
         return this;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public ZonedDateTime getCreated() {
