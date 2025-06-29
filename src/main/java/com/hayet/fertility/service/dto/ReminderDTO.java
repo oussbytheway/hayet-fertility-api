@@ -37,6 +37,10 @@ public class ReminderDTO implements Serializable {
 
     private Boolean active;
 
+    private Long clientId;
+
+    private String clientFullName;
+
     private ZonedDateTime created;
 
     private String createdBy;
@@ -44,10 +48,6 @@ public class ReminderDTO implements Serializable {
     private ZonedDateTime updated;
 
     private String updatedBy;
-
-    private Long clientId;
-
-    private String clientFullName;
 
     public Long getId() {
         return id;
@@ -105,38 +105,6 @@ public class ReminderDTO implements Serializable {
         this.resolvedAt = resolvedAt;
     }
 
-    public ZonedDateTime getCreated() {
-        return created;
-    }
-
-    public void setCreated(ZonedDateTime created) {
-        this.created = created;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public ZonedDateTime getUpdated() {
-        return updated;
-    }
-
-    public void setUpdated(ZonedDateTime updated) {
-        this.updated = updated;
-    }
-
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
     public Integer getRepeatEvery() {
         return repeatEvery;
     }
@@ -185,6 +153,38 @@ public class ReminderDTO implements Serializable {
         this.clientFullName = clientFullName;
     }
 
+    public ZonedDateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(ZonedDateTime created) {
+        this.created = created;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public ZonedDateTime getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(ZonedDateTime updated) {
+        this.updated = updated;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -208,23 +208,23 @@ public class ReminderDTO implements Serializable {
     @Override
     public String toString() {
         return "ReminderDTO{" +
-            "id=" + id +
-            ", motif=" + motif +
-            ", status=" + status +
-            ", note='" + note + '\'' +
-            ", dueAt=" + dueAt +
-            ", sentAt=" + sentAt +
-            ", resolvedAt=" + resolvedAt +
-            ", repeatEvery=" + repeatEvery +
-            ", repeatUnit=" + repeatUnit +
-            ", priority=" + priority +
-            ", active=" + active +
-            ", created=" + created +
-            ", createdBy='" + createdBy + '\'' +
-            ", updated=" + updated +
-            ", updatedBy='" + updatedBy + '\'' +
-            ", clientId=" + clientId +
-            ", clientFullName='" + clientFullName + '\'' +
+            "id=" + getId() +
+            ", motif=" + getMotif() +
+            ", status=" + getStatus() +
+            ", note='" + getNote() + '\'' +
+            ", dueAt=" + getDueAt() +
+            ", sentAt=" + getSentAt() +
+            ", resolvedAt=" + getResolvedAt() +
+            ", repeatEvery=" + getRepeatEvery() +
+            ", repeatUnit=" + getRepeatUnit() +
+            ", priority=" + getPriority() +
+            ", active=" + getActive() +
+            ", clientId=" + getClientId() +
+            ", clientFullName='" + getClientFullName() + '\'' +
+            ", created=" + getCreated() +
+            ", createdBy='" + getCreatedBy() + '\'' +
+            ", updated=" + getUpdated() +
+            ", updatedBy='" + getUpdatedBy() + '\'' +
             '}';
     }
 }

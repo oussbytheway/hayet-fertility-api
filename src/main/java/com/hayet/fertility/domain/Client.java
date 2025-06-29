@@ -39,6 +39,17 @@ public class Client implements Serializable {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender")
+    private Gender gender;
+
+    @Column(name = "birth_date")
+    private LocalDate birthDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "language")
+    private Language language;
+
     @Column(name = "email")
     private String email;
 
@@ -59,17 +70,6 @@ public class Client implements Serializable {
 
     @Column(name = "note")
     private String note;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "gender")
-    private Gender gender;
-
-    @Column(name = "birth_date")
-    private LocalDate birthDate;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "language")
-    private Language language;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -132,6 +132,45 @@ public class Client implements Serializable {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public Gender getGender() {
+        return this.gender;
+    }
+
+    public Client gender(Gender gender) {
+        this.setGender(gender);
+        return this;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public LocalDate getBirthDate() {
+        return this.birthDate;
+    }
+
+    public Client birthDate(LocalDate birthDate) {
+        this.setBirthDate(birthDate);
+        return this;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public Language getLanguage() {
+        return this.language;
+    }
+
+    public Client language(Language language) {
+        this.setLanguage(language);
+        return this;
+    }
+
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 
     public String getEmail() {
@@ -197,45 +236,6 @@ public class Client implements Serializable {
 
     public void setNote(String note) {
         this.note = note;
-    }
-
-    public Gender getGender() {
-        return this.gender;
-    }
-
-    public Client gender(Gender gender) {
-        this.setGender(gender);
-        return this;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
-
-    public LocalDate getBirthDate() {
-        return this.birthDate;
-    }
-
-    public Client birthDate(LocalDate birthDate) {
-        this.setBirthDate(birthDate);
-        return this;
-    }
-
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public Language getLanguage() {
-        return this.language;
-    }
-
-    public Client language(Language language) {
-        this.setLanguage(language);
-        return this;
-    }
-
-    public void setLanguage(Language language) {
-        this.language = language;
     }
 
     public ClientStatus getStatus() {
@@ -348,28 +348,27 @@ public class Client implements Serializable {
         return getClass().hashCode();
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "Client{" +
             "id=" + getId() +
-            ", firstName='" + getFirstName() + "'" +
-            ", lastName='" + getLastName() + "'" +
-            ", email='" + getEmail() + "'" +
-            ", phone='" + getPhone() + "'" +
-            ", whatsapp='" + getWhatsapp() + "'" +
-            ", notificationPreference='" + getNotificationPreference() + "'" +
-            ", note='" + getNote() + "'" +
-            ", gender='" + getGender() + "'" +
-            ", birthDate='" + getBirthDate() + "'" +
-            ", language='" + getLanguage() + "'" +
-            ", status='" + getStatus() + "'" +
+            ", firstName='" + getFirstName() + '\'' +
+            ", lastName='" + getLastName() + '\'' +
+            ", gender=" + getGender() +
+            ", birthDate=" + getBirthDate() +
+            ", language=" + getLanguage() +
+            ", email='" + getEmail() + '\'' +
+            ", phone='" + getPhone() + '\'' +
+            ", whatsapp='" + getWhatsapp() + '\'' +
+            ", notificationPreference=" + getNotificationPreference() +
+            ", note='" + getNote() + '\'' +
+            ", status=" + getStatus() +
             ", reminderCount=" + getReminderCount() +
-            ", tags='" + getTags() + "'" +
-            ", created='" + getCreated() + "'" +
-            ", createdBy='" + getCreatedBy() + "'" +
-            ", updated='" + getUpdated() + "'" +
-            ", updatedBy='" + getUpdatedBy() + "'" +
-            "}";
+            ", tags='" + getTags() + '\'' +
+            ", created=" + getCreated() +
+            ", createdBy='" + getCreatedBy() + '\'' +
+            ", updated=" + getUpdated() +
+            ", updatedBy='" + getUpdatedBy() + '\'' +
+            '}';
     }
 }

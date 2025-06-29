@@ -27,6 +27,7 @@ public class Reminder implements Serializable {
     @Column(name = "id")
     private Long id;
 
+    // Reminder metadata
     @Enumerated(EnumType.STRING)
     @Column(name = "motif")
     private ReminderMotif motif;
@@ -38,6 +39,7 @@ public class Reminder implements Serializable {
     @Column(name = "note")
     private String note;
 
+    // Reminder scheduling
     @Column(name = "due_at")
     private ZonedDateTime dueAt;
 
@@ -47,6 +49,7 @@ public class Reminder implements Serializable {
     @Column(name = "resolved_at")
     private ZonedDateTime resolvedAt;
 
+    // Recurrence
     @Column(name = "repeat_every")
     private Integer repeatEvery;
 
@@ -54,13 +57,21 @@ public class Reminder implements Serializable {
     @Column(name = "repeat_unit")
     private RepeatUnit repeatUnit;
 
+    // Priority
     @Enumerated(EnumType.STRING)
     @Column(name = "priority")
     private ReminderPriority priority;
 
+    // State
     @Column(name = "active")
     private Boolean active;
 
+    // Relationships
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id")
+    private Client client;
+
+    // Audit
     @Column(name = "created")
     private ZonedDateTime created;
 
@@ -72,10 +83,6 @@ public class Reminder implements Serializable {
 
     @Column(name = "updated_by")
     private String updatedBy;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id")
-    private Client client;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -207,6 +214,19 @@ public class Reminder implements Serializable {
         this.active = active;
     }
 
+    public Client getClient() {
+        return this.client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public Reminder client(Client client) {
+        this.setClient(client);
+        return this;
+    }
+
     public ZonedDateTime getCreated() {
         return this.created;
     }
@@ -259,19 +279,6 @@ public class Reminder implements Serializable {
         this.updatedBy = updatedBy;
     }
 
-    public Client getClient() {
-        return this.client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
-    public Reminder client(Client client) {
-        this.setClient(client);
-        return this;
-    }
-
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -294,22 +301,22 @@ public class Reminder implements Serializable {
     @Override
     public String toString() {
         return "Reminder{" +
-            "id=" + id +
-            ", motif=" + motif +
-            ", status=" + status +
-            ", note='" + note + '\'' +
-            ", dueAt=" + dueAt +
-            ", sentAt=" + sentAt +
-            ", resolvedAt=" + resolvedAt +
-            ", repeatEvery=" + repeatEvery +
-            ", repeatUnit=" + repeatUnit +
-            ", priority=" + priority +
-            ", active=" + active +
-            ", created=" + created +
-            ", createdBy='" + createdBy + '\'' +
-            ", updated=" + updated +
-            ", updatedBy='" + updatedBy + '\'' +
-            ", client=" + client +
+            "id=" + getId() +
+            ", motif=" + getMotif() +
+            ", status=" + getStatus() +
+            ", note='" + getNote() + '\'' +
+            ", dueAt=" + getDueAt() +
+            ", sentAt=" + getSentAt() +
+            ", resolvedAt=" + getResolvedAt() +
+            ", repeatEvery=" + getRepeatEvery() +
+            ", repeatUnit=" + getRepeatUnit() +
+            ", priority=" + getPriority() +
+            ", active=" + getActive() +
+            ", client=" + getClient() +
+            ", created=" + getCreated() +
+            ", createdBy='" + getCreatedBy() + '\'' +
+            ", updated=" + getUpdated() +
+            ", updatedBy='" + getUpdatedBy() + '\'' +
             '}';
     }
 }

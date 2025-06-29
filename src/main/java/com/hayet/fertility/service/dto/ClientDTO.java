@@ -26,6 +26,12 @@ public class ClientDTO implements Serializable {
     @NotNull
     private String lastName;
 
+    private Gender gender;
+
+    private LocalDate birthDate;
+
+    private Language language;
+
     private String email;
 
     private String phone;
@@ -35,12 +41,6 @@ public class ClientDTO implements Serializable {
     private Set<NotificationChannel> notificationPreference = new HashSet<>();
 
     private String note;
-
-    private Gender gender;
-
-    private LocalDate birthDate;
-
-    private Language language;
 
     private ClientStatus status;
 
@@ -80,6 +80,30 @@ public class ClientDTO implements Serializable {
         this.lastName = lastName;
     }
 
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public Language getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(Language language) {
+        this.language = language;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -108,8 +132,8 @@ public class ClientDTO implements Serializable {
         return notificationPreference;
     }
 
-    public void setNotificationPreference(Set<NotificationChannel> notificationChannel) {
-        this.notificationPreference = notificationChannel;
+    public void setNotificationPreference(Set<NotificationChannel> notificationPreference) {
+        this.notificationPreference = notificationPreference;
     }
 
     public String getNote() {
@@ -118,30 +142,6 @@ public class ClientDTO implements Serializable {
 
     public void setNote(String note) {
         this.note = note;
-    }
-
-    public Gender getGender() {
-        return gender;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public Language getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(Language language) {
-        this.language = language;
     }
 
     public ClientStatus getStatus() {
@@ -220,28 +220,27 @@ public class ClientDTO implements Serializable {
         return Objects.hash(this.id);
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "ClientDTO{" +
             "id=" + getId() +
-            ", firstName='" + getFirstName() + "'" +
-            ", lastName='" + getLastName() + "'" +
-            ", email='" + getEmail() + "'" +
-            ", phone='" + getPhone() + "'" +
-            ", whatsapp='" + getWhatsapp() + "'" +
-            ", notificationPreference='" + getNotificationPreference() + "'" +
-            ", note='" + getNote() + "'" +
-            ", gender='" + getGender() + "'" +
-            ", birthDate='" + getBirthDate() + "'" +
-            ", language='" + getLanguage() + "'" +
-            ", status='" + getStatus() + "'" +
+            ", firstName='" + getFirstName() + '\'' +
+            ", lastName='" + getLastName() + '\'' +
+            ", gender=" + getGender() +
+            ", birthDate=" + getBirthDate() +
+            ", language=" + getLanguage() +
+            ", email='" + getEmail() + '\'' +
+            ", phone='" + getPhone() + '\'' +
+            ", whatsapp='" + getWhatsapp() + '\'' +
+            ", notificationPreference=" + getNotificationPreference() +
+            ", note='" + getNote() + '\'' +
+            ", status=" + getStatus() +
             ", reminderCount=" + getReminderCount() +
-            ", tags='" + getTags() + "'" +
-            ", created='" + getCreated() + "'" +
-            ", createdBy='" + getCreatedBy() + "'" +
-            ", updated='" + getUpdated() + "'" +
-            ", updatedBy='" + getUpdatedBy() + "'" +
-            "}";
+            ", tags='" + getTags() + '\'' +
+            ", created=" + getCreated() +
+            ", createdBy='" + getCreatedBy() + '\'' +
+            ", updated=" + getUpdated() +
+            ", updatedBy='" + getUpdatedBy() + '\'' +
+            '}';
     }
 }

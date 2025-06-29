@@ -20,6 +20,15 @@
             <column name="last_name" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
+            <column name="gender" type="varchar(255)">
+              <constraints nullable="true" />
+            </column>
+            <column name="birth_date" type="date">
+              <constraints nullable="true" />
+            </column>
+            <column name="language" type="varchar(255)">
+              <constraints nullable="true" />
+            </column>
             <column name="email" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
@@ -29,19 +38,7 @@
             <column name="whatsapp" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="notification_preference" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
             <column name="note" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="gender" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="birth_date" type="date">
-                <constraints nullable="true" />
-            </column>
-            <column name="language" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
             <column name="status" type="varchar(255)">
@@ -69,6 +66,14 @@
         </createTable>
         <dropDefaultValue tableName="client" columnName="created" columnDataType="${datetimeType}"/>
         <dropDefaultValue tableName="client" columnName="updated" columnDataType="${datetimeType}"/>
+        <createTable tableName="client_notification_preferences">
+          <column name="client_id" type="bigint">
+            <constraints nullable="false"/>
+          </column>
+          <column name="notification_channel" type="varchar(255)">
+            <constraints nullable="false"/>
+          </column>
+        </createTable>
     </changeSet>
 
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
