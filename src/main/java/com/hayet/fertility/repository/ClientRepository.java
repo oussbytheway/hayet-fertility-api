@@ -9,4 +9,11 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface ClientRepository extends JpaRepository<Client, Long> {}
+public interface ClientRepository extends JpaRepository<Client, Long> {
+
+    @Query("update Client set status = 'ARCHIVED' where id = ?1")
+    void archiveClient(Long id);
+
+    @Query("update Client set status = 'ACTIVE' where id = ?1")
+    void restoreClient(Long id);
+}

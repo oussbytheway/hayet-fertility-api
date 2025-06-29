@@ -22,7 +22,7 @@ public class Message implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "messageSequence")
-    @SequenceGenerator(name = "messageSequence")
+    @SequenceGenerator(name = "messageSequence", sequenceName = "message_sequence", allocationSize = 1)
     @Column(name = "id")
     private Long id;
 

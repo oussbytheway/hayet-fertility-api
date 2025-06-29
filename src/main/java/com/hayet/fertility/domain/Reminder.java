@@ -23,7 +23,7 @@ public class Reminder implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reminderSequence")
-    @SequenceGenerator(name = "reminderSequence")
+    @SequenceGenerator(name = "reminderSequence", sequenceName = "reminder_sequence", allocationSize = 1)
     @Column(name = "id")
     private Long id;
 
