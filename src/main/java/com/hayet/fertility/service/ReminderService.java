@@ -1,11 +1,16 @@
 package com.hayet.fertility.service;
 
+import com.hayet.fertility.domain.Client;
 import com.hayet.fertility.domain.Reminder;
 import com.hayet.fertility.domain.User;
+import com.hayet.fertility.domain.enumeration.NotificationChannel;
+import com.hayet.fertility.domain.enumeration.NotificationStatus;
 import com.hayet.fertility.domain.enumeration.ReminderPriority;
 import com.hayet.fertility.domain.enumeration.ReminderStatus;
+import com.hayet.fertility.repository.ClientRepository;
 import com.hayet.fertility.repository.ReminderRepository;
 import com.hayet.fertility.security.SecurityUtils;
+import com.hayet.fertility.service.dto.NotificationDTO;
 import com.hayet.fertility.service.dto.ReminderDTO;
 import com.hayet.fertility.service.mapper.ReminderMapper;
 
@@ -34,11 +39,15 @@ public class ReminderService {
     private static final String ENTITY_NAME = "Reminder";
 
     private final ReminderRepository reminderRepository;
+    private final ClientRepository clientRepository;
+    private final NotificationService notificationService;
     private final UserService userService;
     private final ReminderMapper reminderMapper;
 
-    public ReminderService(ReminderRepository reminderRepository, UserService userService, ReminderMapper reminderMapper) {
+    public ReminderService(ReminderRepository reminderRepository, ClientRepository clientRepository, NotificationService notificationService, UserService userService, ReminderMapper reminderMapper) {
         this.reminderRepository = reminderRepository;
+        this.clientRepository = clientRepository;
+        this.notificationService = notificationService;
         this.userService = userService;
         this.reminderMapper = reminderMapper;
     }
@@ -60,15 +69,27 @@ public class ReminderService {
                 ErrorConstants.MOTIF_IS_REQUIRED
             );
         }
-        validateClient(reminder.getClientId());
         validateFutureDueDate(reminder.getDueAt());
+        Client client = validateAndGetClient(reminder.getClientId());
 
         reminder.setStatus(ReminderStatus.SCHEDULED);
         reminder.setPriority(reminder.getPriority() != null ? reminder.getPriority() : ReminderPriority.LOW);
         reminder.setCreated(ZonedDateTime.now());
         reminder.setCreatedBy(authenticatedAdmin.getEmail());
 
-        return save(reminder);
+        ReminderDTO savedReminder = save(reminder);
+
+        for (NotificationChannel channel : client.getNotificationPreference()) {
+            NotificationDTO notification = new NotificationDTO();
+            notification.setChannel(channel);
+            notification.setStatus(NotificationStatus.PENDING);
+            notification.setClientId(client.getId());
+            notification.setReminderId(reminder.getId());
+            notification.setContent("Reminder scheduled: " + reminder.getMotif()); // Todo: Customize as needed
+            notificationService.save(notification);
+        }
+
+        return savedReminder;
     }
 
     /**
@@ -87,10 +108,12 @@ public class ReminderService {
             originalReminder.setMotif(reminder.getMotif());
         }
 
-        // Update client if changed
         if (reminder.getClientId() != null && !Objects.equals(reminder.getClientId(), originalReminder.getClientId())) {
-            validateClient(reminder.getClientId());
-            originalReminder.setClientId(reminder.getClientId());
+            throw new BadRequestAlertException(
+                "You can't update the reminder's client",
+                ENTITY_NAME,
+                "Reminder client is not updatable"
+            );
         }
 
         // Update due date with validation
@@ -239,15 +262,10 @@ public class ReminderService {
         }
     }
 
-    // Validates that the client exists by ID
-    private void validateClient(Long clientId) {
-        if (clientId == null || !reminderRepository.existsClientById(clientId)) {
-            throw new BadRequestAlertException(
-                "Invalid or missing client",
-                ENTITY_NAME,
-                ErrorConstants.INVALID_CLIENT
-            );
-        }
+    // Validates that the client exists and get
+    private Client validateAndGetClient(Long clientId) {
+        return clientRepository.findById(clientId)
+            .orElseThrow(() -> new BadRequestAlertException("Client not found", ENTITY_NAME, "clientnotfound"));
     }
 
     // Updates optional fields from source to target reminder
