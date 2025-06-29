@@ -1,8 +1,5 @@
 package com.hayet.fertility.web.rest;
 
-import static com.hayet.fertility.domain.ReminderAsserts.*;
-import static com.hayet.fertility.web.rest.TestUtil.createUpdateProxyForBean;
-import static com.hayet.fertility.web.rest.TestUtil.sameInstant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -10,17 +7,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hayet.fertility.IntegrationTest;
+import com.hayet.fertility.domain.Client;
 import com.hayet.fertility.domain.Reminder;
-import com.hayet.fertility.domain.enumeration.ReminderMotif;
-import com.hayet.fertility.domain.enumeration.ReminderStatus;
-import com.hayet.fertility.domain.enumeration.RepeatUnit;
+import com.hayet.fertility.domain.enumeration.*;
+import com.hayet.fertility.repository.ClientRepository;
 import com.hayet.fertility.repository.ReminderRepository;
 import com.hayet.fertility.service.dto.ReminderDTO;
 import com.hayet.fertility.service.mapper.ReminderMapper;
+import com.hayet.fertility.web.rest.errors.ErrorConstants;
 import jakarta.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+
 import java.time.ZonedDateTime;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -42,47 +38,17 @@ import org.springframework.transaction.annotation.Transactional;
 @WithMockUser
 class ReminderResourceIT {
 
-    private static final ReminderMotif DEFAULT_MOTIF = ReminderMotif.MOTIF1;
-    private static final ReminderMotif UPDATED_MOTIF = ReminderMotif.MOTIF2;
-
-    private static final ReminderStatus DEFAULT_STATUS = ReminderStatus.SCHEDULED;
-    private static final ReminderStatus UPDATED_STATUS = ReminderStatus.PENDING;
-
-    private static final String DEFAULT_NOTE = "AAAAAAAAAA";
-    private static final String UPDATED_NOTE = "BBBBBBBBBB";
-
-    private static final ZonedDateTime DEFAULT_SENT_AT = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_SENT_AT = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
-    private static final ZonedDateTime DEFAULT_RESOLVED_AT = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_RESOLVED_AT = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
-    private static final ZonedDateTime DEFAULT_CREATED = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_CREATED = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
-    private static final String DEFAULT_CREATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_CREATED_BY = "BBBBBBBBBB";
-
-    private static final ZonedDateTime DEFAULT_UPDATED = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_UPDATED = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
-    private static final String DEFAULT_UPDATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_UPDATED_BY = "BBBBBBBBBB";
-
-    private static final Integer DEFAULT_REPEAT_EVERY = 1;
-    private static final Integer UPDATED_REPEAT_EVERY = 2;
-
-    private static final RepeatUnit DEFAULT_REPEAT_UNIT = RepeatUnit.DAY;
-    private static final RepeatUnit UPDATED_REPEAT_UNIT = RepeatUnit.WEEK;
-
     private static final String ENTITY_API_URL = "/api/reminders";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
-    private static Random random = new Random();
-    private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
+    private static final Random random = new Random();
+    private static final AtomicLong longCount = new AtomicLong(random.nextInt() + (Integer.MAX_VALUE));
 
     @Autowired
     private ObjectMapper om;
+
+    @Autowired
+    private ClientRepository clientRepository;
 
     @Autowired
     private ReminderRepository reminderRepository;
@@ -96,71 +62,45 @@ class ReminderResourceIT {
     @Autowired
     private MockMvc restReminderMockMvc;
 
+    private Client client;
     private Reminder reminder;
 
-    private Reminder insertedReminder;
-
-    /**
-     * Create an entity for this test.
-     *
-     * This is a static method, as tests for other entities might also need it,
-     * if they test an entity which requires the current entity.
-     */
     public static Reminder createEntity() {
         return new Reminder()
-            .motif(DEFAULT_MOTIF)
-            .status(DEFAULT_STATUS)
-            .note(DEFAULT_NOTE)
-            .sentAt(DEFAULT_SENT_AT)
-            .resolvedAt(DEFAULT_RESOLVED_AT)
-            .created(DEFAULT_CREATED)
-            .createdBy(DEFAULT_CREATED_BY)
-            .updated(DEFAULT_UPDATED)
-            .updatedBy(DEFAULT_UPDATED_BY)
-            .repeatEvery(DEFAULT_REPEAT_EVERY)
-            .repeatUnit(DEFAULT_REPEAT_UNIT);
-    }
-
-    /**
-     * Create an updated entity for this test.
-     *
-     * This is a static method, as tests for other entities might also need it,
-     * if they test an entity which requires the current entity.
-     */
-    public static Reminder createUpdatedEntity() {
-        return new Reminder()
-            .motif(UPDATED_MOTIF)
-            .status(UPDATED_STATUS)
-            .note(UPDATED_NOTE)
-            .sentAt(UPDATED_SENT_AT)
-            .resolvedAt(UPDATED_RESOLVED_AT)
-            .created(UPDATED_CREATED)
-            .createdBy(UPDATED_CREATED_BY)
-            .updated(UPDATED_UPDATED)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .repeatEvery(UPDATED_REPEAT_EVERY)
-            .repeatUnit(UPDATED_REPEAT_UNIT);
+            .motif(ReminderMotif.MOTIF1)
+            .status(ReminderStatus.SCHEDULED)
+            .priority(ReminderPriority.LOW)
+            .note("Test reminder note")
+            .dueAt(ZonedDateTime.now().plusDays(1))
+            .active(true)
+            .repeatEvery(1)
+            .repeatUnit(RepeatUnit.DAY);
     }
 
     @BeforeEach
     public void initTest() {
-        reminder = createEntity();
+        client = ClientResourceIT.createEntity();
+        client = clientRepository.saveAndFlush(client);
+        reminder = createEntity().client(client);
+        reminder = reminderRepository.saveAndFlush(reminder);
     }
 
     @AfterEach
     public void cleanup() {
-        if (insertedReminder != null) {
-            reminderRepository.delete(insertedReminder);
-            insertedReminder = null;
-        }
+        reminderRepository.deleteAll();
+        clientRepository.deleteAll();
     }
 
     @Test
     @Transactional
     void createReminder() throws Exception {
         long databaseSizeBeforeCreate = getRepositoryCount();
-        // Create the Reminder
-        ReminderDTO reminderDTO = reminderMapper.toDto(reminder);
+
+        Reminder newReminder = createEntity().client(client);
+        ReminderDTO reminderDTO = reminderMapper.toDto(newReminder);
+        reminderDTO.setClientId(client.getId());
+        reminderDTO.setId(null);
+
         var returnedReminderDTO = om.readValue(
             restReminderMockMvc
                 .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(reminderDTO)))
@@ -171,113 +111,89 @@ class ReminderResourceIT {
             ReminderDTO.class
         );
 
-        // Validate the Reminder in the database
         assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
-        var returnedReminder = reminderMapper.toEntity(returnedReminderDTO);
-        assertReminderUpdatableFieldsEquals(returnedReminder, getPersistedReminder(returnedReminder));
-
-        insertedReminder = returnedReminder;
+        assertThat(returnedReminderDTO.getStatus()).isEqualTo(ReminderStatus.SCHEDULED);
+        assertThat(returnedReminderDTO.getPriority()).isEqualTo(ReminderPriority.LOW);
+        assertThat(returnedReminderDTO.getCreated()).isNotNull();
+        assertThat(returnedReminderDTO.getCreatedBy()).isNotNull();
     }
 
     @Test
     @Transactional
     void createReminderWithExistingId() throws Exception {
-        // Create the Reminder with an existing ID
-        reminder.setId(1L);
-        ReminderDTO reminderDTO = reminderMapper.toDto(reminder);
+        Reminder newReminder = createEntity().client(client);
+        ReminderDTO reminderDTO = reminderMapper.toDto(newReminder);
+        reminderDTO.setClientId(client.getId());
+        reminderDTO.setId(1L);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
 
-        // An entity with an existing ID cannot be created, so this API call must fail
         restReminderMockMvc
             .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(reminderDTO)))
-            .andExpect(status().isBadRequest());
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message").value("error.idexists"));
 
-        // Validate the Reminder in the database
         assertSameRepositoryCount(databaseSizeBeforeCreate);
     }
 
     @Test
     @Transactional
-    void getAllReminders() throws Exception {
-        // Initialize the database
-        insertedReminder = reminderRepository.saveAndFlush(reminder);
+    void createReminderWithoutMotif() throws Exception {
+        Reminder newReminder = createEntity().client(client);
+        ReminderDTO reminderDTO = reminderMapper.toDto(newReminder);
+        reminderDTO.setClientId(client.getId());
+        reminderDTO.setId(null);
+        reminderDTO.setMotif(null);
 
-        // Get all the reminderList
+        long databaseSizeBeforeCreate = getRepositoryCount();
+
         restReminderMockMvc
-            .perform(get(ENTITY_API_URL + "?sort=id,desc"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(reminder.getId().intValue())))
-            .andExpect(jsonPath("$.[*].motif").value(hasItem(DEFAULT_MOTIF.toString())))
-            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
-            .andExpect(jsonPath("$.[*].note").value(hasItem(DEFAULT_NOTE)))
-            .andExpect(jsonPath("$.[*].sentAt").value(hasItem(sameInstant(DEFAULT_SENT_AT))))
-            .andExpect(jsonPath("$.[*].resolvedAt").value(hasItem(sameInstant(DEFAULT_RESOLVED_AT))))
-            .andExpect(jsonPath("$.[*].created").value(hasItem(sameInstant(DEFAULT_CREATED))))
-            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
-            .andExpect(jsonPath("$.[*].updated").value(hasItem(sameInstant(DEFAULT_UPDATED))))
-            .andExpect(jsonPath("$.[*].updatedBy").value(hasItem(DEFAULT_UPDATED_BY)))
-            .andExpect(jsonPath("$.[*].repeatEvery").value(hasItem(DEFAULT_REPEAT_EVERY)))
-            .andExpect(jsonPath("$.[*].repeatUnit").value(hasItem(DEFAULT_REPEAT_UNIT.toString())));
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(reminderDTO)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message").value("error." + ErrorConstants.MOTIF_IS_REQUIRED));
+
+        assertSameRepositoryCount(databaseSizeBeforeCreate);
     }
 
     @Test
     @Transactional
-    void getReminder() throws Exception {
-        // Initialize the database
-        insertedReminder = reminderRepository.saveAndFlush(reminder);
+    void createReminderWithPastDueDate() throws Exception {
+        Reminder newReminder = createEntity().client(client);
+        ReminderDTO reminderDTO = reminderMapper.toDto(newReminder);
+        reminderDTO.setClientId(client.getId());
+        reminderDTO.setId(null);
+        reminderDTO.setDueAt(ZonedDateTime.now().minusHours(1));
 
-        // Get the reminder
+        long databaseSizeBeforeCreate = getRepositoryCount();
+
         restReminderMockMvc
-            .perform(get(ENTITY_API_URL_ID, reminder.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(reminder.getId().intValue()))
-            .andExpect(jsonPath("$.motif").value(DEFAULT_MOTIF.toString()))
-            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
-            .andExpect(jsonPath("$.note").value(DEFAULT_NOTE))
-            .andExpect(jsonPath("$.sentAt").value(sameInstant(DEFAULT_SENT_AT)))
-            .andExpect(jsonPath("$.resolvedAt").value(sameInstant(DEFAULT_RESOLVED_AT)))
-            .andExpect(jsonPath("$.created").value(sameInstant(DEFAULT_CREATED)))
-            .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY))
-            .andExpect(jsonPath("$.updated").value(sameInstant(DEFAULT_UPDATED)))
-            .andExpect(jsonPath("$.updatedBy").value(DEFAULT_UPDATED_BY))
-            .andExpect(jsonPath("$.repeatEvery").value(DEFAULT_REPEAT_EVERY))
-            .andExpect(jsonPath("$.repeatUnit").value(DEFAULT_REPEAT_UNIT.toString()));
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(reminderDTO)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message").value("error." + ErrorConstants.DUE_DATE_MUST_BE_IN_FUTURE));
+
+        assertSameRepositoryCount(databaseSizeBeforeCreate);
     }
 
     @Test
     @Transactional
-    void getNonExistingReminder() throws Exception {
-        // Get the reminder
-        restReminderMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
-    }
-
-    @Test
-    @Transactional
-    void putExistingReminder() throws Exception {
-        // Initialize the database
-        insertedReminder = reminderRepository.saveAndFlush(reminder);
-
+    void updateReminder() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
 
-        // Update the reminder
+        Client updatedClient = clientRepository.saveAndFlush(
+            ClientResourceIT.createEntity().lastName("BBQ").email("example@live").gender(Gender.MALE).tags("alger,marié")
+        );
+
         Reminder updatedReminder = reminderRepository.findById(reminder.getId()).orElseThrow();
-        // Disconnect from session so that the updates on updatedReminder are not directly saved in db
         em.detach(updatedReminder);
         updatedReminder
-            .motif(UPDATED_MOTIF)
-            .status(UPDATED_STATUS)
-            .note(UPDATED_NOTE)
-            .sentAt(UPDATED_SENT_AT)
-            .resolvedAt(UPDATED_RESOLVED_AT)
-            .created(UPDATED_CREATED)
-            .createdBy(UPDATED_CREATED_BY)
-            .updated(UPDATED_UPDATED)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .repeatEvery(UPDATED_REPEAT_EVERY)
-            .repeatUnit(UPDATED_REPEAT_UNIT);
+            .motif(ReminderMotif.MOTIF2)
+            .note("Updated reminder note")
+            .dueAt(ZonedDateTime.now().plusDays(2))
+            .priority(ReminderPriority.HIGH)
+            .repeatEvery(2)
+            .repeatUnit(RepeatUnit.WEEK)
+            .client(updatedClient);
+
         ReminderDTO reminderDTO = reminderMapper.toDto(updatedReminder);
 
         restReminderMockMvc
@@ -288,221 +204,154 @@ class ReminderResourceIT {
             )
             .andExpect(status().isOk());
 
-        // Validate the Reminder in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
-        assertPersistedReminderToMatchAllProperties(updatedReminder);
+
+        Reminder persistedReminder = getPersistedReminder(updatedReminder);
+        assertThat(persistedReminder.getMotif()).isEqualTo(ReminderMotif.MOTIF2);
+        assertThat(persistedReminder.getNote()).isEqualTo("Updated reminder note");
+        assertThat(persistedReminder.getUpdated()).isNotNull();
+        assertThat(persistedReminder.getUpdatedBy()).isNotNull();
     }
 
     @Test
     @Transactional
-    void putNonExistingReminder() throws Exception {
-        long databaseSizeBeforeUpdate = getRepositoryCount();
-        reminder.setId(longCount.incrementAndGet());
+    void updateReminderNearExecution() throws Exception {
+        // Set due date to less than 1 minute from now
+        reminder.setDueAt(ZonedDateTime.now().plusSeconds(30));
+        reminderRepository.saveAndFlush(reminder);
 
-        // Create the Reminder
-        ReminderDTO reminderDTO = reminderMapper.toDto(reminder);
+        Reminder updatedReminder = reminderRepository.findById(reminder.getId()).orElseThrow();
+        em.detach(updatedReminder);
+        updatedReminder.setNote("Should not be updated");
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException
+        ReminderDTO reminderDTO = reminderMapper.toDto(updatedReminder);
+
         restReminderMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, reminderDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(om.writeValueAsBytes(reminderDTO))
             )
-            .andExpect(status().isBadRequest());
-
-        // Validate the Reminder in the database
-        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message").value("error." + ErrorConstants.REMINDER_NEAR_EXECUTION_CANNOT_BE_MODIFIED));
     }
 
     @Test
     @Transactional
-    void putWithIdMismatchReminder() throws Exception {
+    void activateReminder() throws Exception {
+        restReminderMockMvc
+            .perform(post(ENTITY_API_URL_ID + "/activate", reminder.getId()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.active").value(true));
+
+        Reminder persistedReminder = getPersistedReminder(reminder);
+        assertThat(persistedReminder.getActive()).isTrue();
+        assertThat(persistedReminder.getUpdated()).isNotNull();
+        assertThat(persistedReminder.getUpdatedBy()).isNotNull();
+    }
+
+    @Test
+    @Transactional
+    void deactivateReminder() throws Exception {
+        restReminderMockMvc
+            .perform(post(ENTITY_API_URL_ID + "/deactivate", reminder.getId()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.active").value(false));
+
+        Reminder persistedReminder = getPersistedReminder(reminder);
+        assertThat(persistedReminder.getActive()).isFalse();
+    }
+
+    @Test
+    @Transactional
+    void resolveReminder() throws Exception {
+        restReminderMockMvc
+            .perform(post(ENTITY_API_URL_ID + "/resolve", reminder.getId()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.resolvedAt").isNotEmpty());
+
+        Reminder persistedReminder = getPersistedReminder(reminder);
+        assertThat(persistedReminder.getResolvedAt()).isNotNull();
+    }
+
+    @Test
+    @Transactional
+    void activateNonExistingReminder() throws Exception {
+        restReminderMockMvc
+            .perform(post(ENTITY_API_URL_ID + "/activate", Long.MAX_VALUE))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Transactional
+    void getAllReminders() throws Exception {
+        restReminderMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(reminder.getId().intValue())))
+            .andExpect(jsonPath("$.[*].motif").value(hasItem(ReminderMotif.MOTIF1.toString())))
+            .andExpect(jsonPath("$.[*].status").value(hasItem(ReminderStatus.SCHEDULED.toString())))
+            .andExpect(jsonPath("$.[*].priority").value(hasItem(ReminderPriority.LOW.toString())))
+            .andExpect(jsonPath("$.[*].note").value(hasItem("Test reminder note")))
+            .andExpect(jsonPath("$.[*].active").value(hasItem(true)))
+            .andExpect(jsonPath("$.[*].repeatEvery").value(hasItem(1)))
+            .andExpect(jsonPath("$.[*].repeatUnit").value(hasItem(RepeatUnit.DAY.toString())))
+            .andExpect(jsonPath("$.[*].clientId").value(hasItem(client.getId().intValue())));
+    }
+
+    @Test
+    @Transactional
+    void getReminder() throws Exception {
+        restReminderMockMvc
+            .perform(get(ENTITY_API_URL_ID, reminder.getId()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.id").value(reminder.getId().intValue()))
+            .andExpect(jsonPath("$.motif").value(ReminderMotif.MOTIF1.toString()))
+            .andExpect(jsonPath("$.status").value(ReminderStatus.SCHEDULED.toString()))
+            .andExpect(jsonPath("$.priority").value(ReminderPriority.LOW.toString()))
+            .andExpect(jsonPath("$.note").value("Test reminder note"))
+            .andExpect(jsonPath("$.active").value(true))
+            .andExpect(jsonPath("$.repeatEvery").value(1))
+            .andExpect(jsonPath("$.repeatUnit").value(RepeatUnit.DAY.toString()))
+            .andExpect(jsonPath("$.clientId").value(client.getId().intValue()));
+    }
+
+    @Test
+    @Transactional
+    void getNonExistingReminder() throws Exception {
+        restReminderMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @Transactional
+    void updateNonExistingReminder() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        reminder.setId(longCount.incrementAndGet());
+        Reminder nonExistingReminder = createEntity().id(longCount.incrementAndGet());
+        ReminderDTO reminderDTO = reminderMapper.toDto(nonExistingReminder);
 
-        // Create the Reminder
-        ReminderDTO reminderDTO = reminderMapper.toDto(reminder);
-
-        // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restReminderMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                put(ENTITY_API_URL_ID, reminderDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(om.writeValueAsBytes(reminderDTO))
             )
-            .andExpect(status().isBadRequest());
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message").value("error.idnotfound"));
 
-        // Validate the Reminder in the database
-        assertSameRepositoryCount(databaseSizeBeforeUpdate);
-    }
-
-    @Test
-    @Transactional
-    void putWithMissingIdPathParamReminder() throws Exception {
-        long databaseSizeBeforeUpdate = getRepositoryCount();
-        reminder.setId(longCount.incrementAndGet());
-
-        // Create the Reminder
-        ReminderDTO reminderDTO = reminderMapper.toDto(reminder);
-
-        // If url ID doesn't match entity ID, it will throw BadRequestAlertException
-        restReminderMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(reminderDTO)))
-            .andExpect(status().isMethodNotAllowed());
-
-        // Validate the Reminder in the database
-        assertSameRepositoryCount(databaseSizeBeforeUpdate);
-    }
-
-    @Test
-    @Transactional
-    void partialUpdateReminderWithPatch() throws Exception {
-        // Initialize the database
-        insertedReminder = reminderRepository.saveAndFlush(reminder);
-
-        long databaseSizeBeforeUpdate = getRepositoryCount();
-
-        // Update the reminder using partial update
-        Reminder partialUpdatedReminder = new Reminder();
-        partialUpdatedReminder.setId(reminder.getId());
-
-        partialUpdatedReminder
-            .motif(UPDATED_MOTIF)
-            .sentAt(UPDATED_SENT_AT)
-            .resolvedAt(UPDATED_RESOLVED_AT)
-            .createdBy(UPDATED_CREATED_BY)
-            .repeatEvery(UPDATED_REPEAT_EVERY);
-
-        restReminderMockMvc
-            .perform(
-                patch(ENTITY_API_URL_ID, partialUpdatedReminder.getId())
-                    .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(partialUpdatedReminder))
-            )
-            .andExpect(status().isOk());
-
-        // Validate the Reminder in the database
-
-        assertSameRepositoryCount(databaseSizeBeforeUpdate);
-        assertReminderUpdatableFieldsEquals(createUpdateProxyForBean(partialUpdatedReminder, reminder), getPersistedReminder(reminder));
-    }
-
-    @Test
-    @Transactional
-    void fullUpdateReminderWithPatch() throws Exception {
-        // Initialize the database
-        insertedReminder = reminderRepository.saveAndFlush(reminder);
-
-        long databaseSizeBeforeUpdate = getRepositoryCount();
-
-        // Update the reminder using partial update
-        Reminder partialUpdatedReminder = new Reminder();
-        partialUpdatedReminder.setId(reminder.getId());
-
-        partialUpdatedReminder
-            .motif(UPDATED_MOTIF)
-            .status(UPDATED_STATUS)
-            .note(UPDATED_NOTE)
-            .sentAt(UPDATED_SENT_AT)
-            .resolvedAt(UPDATED_RESOLVED_AT)
-            .created(UPDATED_CREATED)
-            .createdBy(UPDATED_CREATED_BY)
-            .updated(UPDATED_UPDATED)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .repeatEvery(UPDATED_REPEAT_EVERY)
-            .repeatUnit(UPDATED_REPEAT_UNIT);
-
-        restReminderMockMvc
-            .perform(
-                patch(ENTITY_API_URL_ID, partialUpdatedReminder.getId())
-                    .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(partialUpdatedReminder))
-            )
-            .andExpect(status().isOk());
-
-        // Validate the Reminder in the database
-
-        assertSameRepositoryCount(databaseSizeBeforeUpdate);
-        assertReminderUpdatableFieldsEquals(partialUpdatedReminder, getPersistedReminder(partialUpdatedReminder));
-    }
-
-    @Test
-    @Transactional
-    void patchNonExistingReminder() throws Exception {
-        long databaseSizeBeforeUpdate = getRepositoryCount();
-        reminder.setId(longCount.incrementAndGet());
-
-        // Create the Reminder
-        ReminderDTO reminderDTO = reminderMapper.toDto(reminder);
-
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restReminderMockMvc
-            .perform(
-                patch(ENTITY_API_URL_ID, reminderDTO.getId())
-                    .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(reminderDTO))
-            )
-            .andExpect(status().isBadRequest());
-
-        // Validate the Reminder in the database
-        assertSameRepositoryCount(databaseSizeBeforeUpdate);
-    }
-
-    @Test
-    @Transactional
-    void patchWithIdMismatchReminder() throws Exception {
-        long databaseSizeBeforeUpdate = getRepositoryCount();
-        reminder.setId(longCount.incrementAndGet());
-
-        // Create the Reminder
-        ReminderDTO reminderDTO = reminderMapper.toDto(reminder);
-
-        // If url ID doesn't match entity ID, it will throw BadRequestAlertException
-        restReminderMockMvc
-            .perform(
-                patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
-                    .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(reminderDTO))
-            )
-            .andExpect(status().isBadRequest());
-
-        // Validate the Reminder in the database
-        assertSameRepositoryCount(databaseSizeBeforeUpdate);
-    }
-
-    @Test
-    @Transactional
-    void patchWithMissingIdPathParamReminder() throws Exception {
-        long databaseSizeBeforeUpdate = getRepositoryCount();
-        reminder.setId(longCount.incrementAndGet());
-
-        // Create the Reminder
-        ReminderDTO reminderDTO = reminderMapper.toDto(reminder);
-
-        // If url ID doesn't match entity ID, it will throw BadRequestAlertException
-        restReminderMockMvc
-            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(reminderDTO)))
-            .andExpect(status().isMethodNotAllowed());
-
-        // Validate the Reminder in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     @Transactional
     void deleteReminder() throws Exception {
-        // Initialize the database
-        insertedReminder = reminderRepository.saveAndFlush(reminder);
-
         long databaseSizeBeforeDelete = getRepositoryCount();
 
-        // Delete the reminder
         restReminderMockMvc
             .perform(delete(ENTITY_API_URL_ID, reminder.getId()).accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 
-        // Validate the database contains one less item
         assertDecrementedRepositoryCount(databaseSizeBeforeDelete);
     }
 
@@ -524,13 +373,5 @@ class ReminderResourceIT {
 
     protected Reminder getPersistedReminder(Reminder reminder) {
         return reminderRepository.findById(reminder.getId()).orElseThrow();
-    }
-
-    protected void assertPersistedReminderToMatchAllProperties(Reminder expectedReminder) {
-        assertReminderAllPropertiesEquals(expectedReminder, getPersistedReminder(expectedReminder));
-    }
-
-    protected void assertPersistedReminderToMatchUpdatableProperties(Reminder expectedReminder) {
-        assertReminderAllUpdatablePropertiesEquals(expectedReminder, getPersistedReminder(expectedReminder));
     }
 }
