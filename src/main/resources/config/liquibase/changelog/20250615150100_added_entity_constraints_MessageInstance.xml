@@ -8,7 +8,7 @@
     <!--
         Added the constraints for entity MessageInstance.
     -->
-    <changeSet id="20250615150100-2" author="jhipster">
+    <changeSet id="20250615150100-2" author="jhipster" ignore = "true">
 
         <addForeignKeyConstraint baseColumnNames="client_id"
                                  baseTableName="message_instance"
