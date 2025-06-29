@@ -60,6 +60,7 @@ public class ReminderService {
                 ErrorConstants.MOTIF_IS_REQUIRED
             );
         }
+        validateClient(reminder.getClientId());
         validateFutureDueDate(reminder.getDueAt());
 
         reminder.setStatus(ReminderStatus.SCHEDULED);
@@ -81,9 +82,15 @@ public class ReminderService {
         User authenticatedAdmin = getCurrentAuthenticatedUser();
         ReminderDTO originalReminder = getReminderOrThrow(reminder.getId());
 
-        // Update motif if provided
+        // Update motif if changed
         if (reminder.getMotif() != null && !Objects.equals(reminder.getMotif(), originalReminder.getMotif())) {
             originalReminder.setMotif(reminder.getMotif());
+        }
+
+        // Update client if changed
+        if (reminder.getClientId() != null && !Objects.equals(reminder.getClientId(), originalReminder.getClientId())) {
+            validateClient(reminder.getClientId());
+            originalReminder.setClientId(reminder.getClientId());
         }
 
         // Update due date with validation
@@ -232,6 +239,17 @@ public class ReminderService {
         }
     }
 
+    // Validates that the client exists by ID
+    private void validateClient(Long clientId) {
+        if (clientId == null || !reminderRepository.existsClientById(clientId)) {
+            throw new BadRequestAlertException(
+                "Invalid or missing client",
+                ENTITY_NAME,
+                ErrorConstants.INVALID_CLIENT
+            );
+        }
+    }
+
     // Updates optional fields from source to target reminder
     private void updateOptionalFields(ReminderDTO target, ReminderDTO source) {
         if (source.getNote() != null && !Objects.equals(target.getNote(), source.getNote())) {
@@ -245,9 +263,6 @@ public class ReminderService {
         }
         if (source.getPriority() != null && !Objects.equals(target.getPriority(), source.getPriority())) {
             target.setPriority(source.getPriority());
-        }
-        if (source.getClientId() != null && !Objects.equals(target.getClientId(), source.getClientId())) {
-            target.setClientId(source.getClientId());
         }
     }
 

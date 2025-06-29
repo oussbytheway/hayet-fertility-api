@@ -17,6 +17,7 @@ public final class ErrorConstants {
     public static final String MOTIF_IS_REQUIRED = "E03";
     public static final String DUE_DATE_MUST_BE_IN_FUTURE = "E04";
     public static final String REMINDER_NEAR_EXECUTION_CANNOT_BE_MODIFIED = "E05";
+    public static final String INVALID_CLIENT = "E06";
 
     private ErrorConstants() {}
 }
