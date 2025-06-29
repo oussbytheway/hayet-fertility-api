@@ -30,6 +30,12 @@ public class NotificationDTO implements Serializable {
 
     private String errorMessage;
 
+    private Long reminderId;
+
+    private Long clientId;
+
+    private String clientFullName;
+
     private ZonedDateTime created;
 
     private String createdBy;
@@ -37,12 +43,6 @@ public class NotificationDTO implements Serializable {
     private ZonedDateTime updated;
 
     private String updatedBy;
-
-    private Long reminderId;
-
-    private Long clientId;
-
-    private String clientFullName;
 
     public Long getId() {
         return id;

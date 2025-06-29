@@ -51,6 +51,14 @@ public class Notification implements Serializable {
     @Column(name = "error_message")
     private String errorMessage;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reminder_id")
+    private Reminder reminder;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id")
+    private Client client;
+
     @Column(name = "created")
     private ZonedDateTime created;
 
@@ -62,14 +70,6 @@ public class Notification implements Serializable {
 
     @Column(name = "updated_by")
     private String updatedBy;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reminder_id")
-    private Reminder reminder;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id")
-    private Client client;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -145,6 +145,22 @@ public class Notification implements Serializable {
         this.errorMessage = errorMessage;
     }
 
+    public Reminder getReminder() {
+        return reminder;
+    }
+
+    public void setReminder(Reminder reminder) {
+        this.reminder = reminder;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
     public ZonedDateTime getCreated() {
         return created;
     }
@@ -177,22 +193,6 @@ public class Notification implements Serializable {
         this.updatedBy = updatedBy;
     }
 
-    public Reminder getReminder() {
-        return reminder;
-    }
-
-    public void setReminder(Reminder reminder) {
-        this.reminder = reminder;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -215,21 +215,21 @@ public class Notification implements Serializable {
     @Override
     public String toString() {
         return "Notification{" +
-            "id=" + id +
-            ", content='" + content + '\'' +
-            ", channel=" + channel +
-            ", status=" + status +
-            ", sentAt=" + sentAt +
-            ", deliveredAt=" + deliveredAt +
-            ", failedAt=" + failedAt +
-            ", deliveryAttempts=" + deliveryAttempts +
-            ", errorMessage='" + errorMessage + '\'' +
-            ", created=" + created +
-            ", createdBy='" + createdBy + '\'' +
-            ", updated=" + updated +
-            ", updatedBy='" + updatedBy + '\'' +
-            ", reminder=" + reminder +
-            ", client=" + client +
+            "id=" + getId() +
+            ", content='" + getContent() + '\'' +
+            ", channel=" + getChannel() +
+            ", status=" + getStatus() +
+            ", sentAt=" + getSentAt() +
+            ", deliveredAt=" + getDeliveredAt() +
+            ", failedAt=" + getFailedAt() +
+            ", deliveryAttempts=" + getDeliveryAttempts() +
+            ", errorMessage='" + getErrorMessage() + '\'' +
+            ", reminder=" + getReminder() +
+            ", client=" + getClient() +
+            ", created=" + getCreated() +
+            ", createdBy='" + getCreatedBy() + '\'' +
+            ", updated=" + getUpdated() +
+            ", updatedBy='" + getUpdatedBy() + '\'' +
             '}';
     }
 }

@@ -25,12 +25,34 @@
       "fieldType": "String"
     },
     {
+      "fieldName": "dueAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
       "fieldName": "sentAt",
       "fieldType": "ZonedDateTime"
     },
     {
       "fieldName": "resolvedAt",
       "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "repeatEvery",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "repeatUnit",
+      "fieldType": "RepeatUnit",
+      "fieldValues": "DAILY,WEEKLY,MONTHLY,YEARLY"
+    },
+    {
+      "fieldName": "priority",
+      "fieldType": "ReminderPriority",
+      "fieldValues": "LOW,MEDIUM,HIGH,URGENT"
+    },
+    {
+      "fieldName": "active",
+      "fieldType": "Boolean"
     },
     {
       "fieldName": "created",
@@ -47,24 +69,6 @@
     {
       "fieldName": "updatedBy",
       "fieldType": "String"
-    },
-    {
-      "fieldName": "active",
-      "fieldType": "Boolean"
-    },
-    {
-      "fieldName": "priority",
-      "fieldType": "ReminderPriority",
-      "fieldValues": "LOW,MEDIUM,HIGH,URGENT"
-    },
-    {
-      "fieldName": "repeatEvery",
-      "fieldType": "Integer"
-    },
-    {
-      "fieldName": "repeatUnit",
-      "fieldType": "RepeatUnit",
-      "fieldValues": "DAILY,WEEKLY,MONTHLY,YEARLY"
     }
   ],
   "relationships": [

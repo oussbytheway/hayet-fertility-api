@@ -14,6 +14,20 @@
       "fieldValidateRules": ["required"]
     },
     {
+      "fieldName": "gender",
+      "fieldType": "Gender",
+      "fieldValues": "MALE,FEMALE"
+    },
+    {
+      "fieldName": "birthDate",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "language",
+      "fieldType": "Language",
+      "fieldValues": "EN,FR,AR"
+    },
+    {
       "fieldName": "email",
       "fieldType": "String"
     },
@@ -34,20 +48,6 @@
     {
       "fieldName": "note",
       "fieldType": "String"
-    },
-    {
-      "fieldName": "gender",
-      "fieldType": "Gender",
-      "fieldValues": "MALE,FEMALE"
-    },
-    {
-      "fieldName": "birthDate",
-      "fieldType": "LocalDate"
-    },
-    {
-      "fieldName": "language",
-      "fieldType": "Language",
-      "fieldValues": "EN,FR,AR"
     },
     {
       "fieldName": "status",
